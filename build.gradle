@@ -329,6 +329,11 @@ android {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
+        // Icône personnalisée de Lawnchair Perso
+        perso {
+            res.srcDirs = ["perso/res"]
+        }
+
         // Priorité la plus haute : retire les permissions sensibles (voir perso/AndroidManifest.xml)
         lawnWithQuickstepPersoRelease {
             manifest.srcFile "perso/AndroidManifest.xml"
