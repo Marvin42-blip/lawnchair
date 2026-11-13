@@ -165,6 +165,15 @@ fun AppDrawerFoldersPreference(
                 ColorPreference(preference = prefs2.drawerFolderRowColorDark)
                 ColorPreference(preference = prefs2.drawerFolderTextColorDark)
             }
+            PreferenceGroup(heading = stringResource(R.string.perso_shape_heading)) {
+                SliderPreference(
+                    label = stringResource(id = R.string.corner_radius_label),
+                    adapter = prefs2.drawerFolderRowCorner.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+            }
             PreferenceGroup(heading = stringResource(R.string.perso_opacity_heading)) {
                 SliderPreference(
                     label = stringResource(id = R.string.perso_drawer_bg_opacity),

@@ -571,6 +571,13 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = ColorOption.Default,
     )
 
+    // Perso : arrondi des rectangles (0 = coins droits, 1 = forme de pilule)
+    val drawerFolderRowCorner = preference(
+        key = floatPreferencesKey(name = "drawer_folder_row_corner"),
+        defaultValue = 0.5f,
+        onSet = { reloadHelper.recreate() },
+    )
+
     val drawerFolderRowOpacity = preference(
         key = floatPreferencesKey(name = "drawer_folder_row_opacity"),
         defaultValue = 0.12f,

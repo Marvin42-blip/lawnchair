@@ -452,7 +452,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                     }
                     android.graphics.drawable.GradientDrawable bg =
                             new android.graphics.drawable.GradientDrawable();
-                    bg.setCornerRadius(14 * density);
+                    bg.setCornerRadius(app.lawnchair.util.LawnchairUtilsKt
+                            .getDrawerFolderRowCorner(mActivityContext) * 26 * density);
                     bg.setColor(app.lawnchair.util.LawnchairUtilsKt.resolveDrawerFolderRowColor(
                             mActivityContext, ((android.widget.TextView) name).getCurrentTextColor()));
                     icon.setBackground(bg);

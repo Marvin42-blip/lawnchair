@@ -595,3 +595,7 @@ fun resolveDrawerFolderTextColor(context: Context): Int {
     val own = customColorOrZero(context, themed(context, prefs2.drawerFolderTextColor.firstCached(), prefs2.drawerFolderTextColorDark.firstCached()))
     return if (own != 0) ColorUtils.setAlphaComponent(own, 255) else 0
 }
+
+/** Arrondi des rectangles de dossiers : 0 = coins droits, 1 = pilule. */
+fun getDrawerFolderRowCorner(context: Context): Float =
+    PreferenceManager2.getInstance(context).drawerFolderRowCorner.firstCached().coerceIn(0f, 1f)
