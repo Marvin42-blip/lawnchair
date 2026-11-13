@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Version perso : retire ce qui fait bloquer l'installation par Google Play Protect
+    pour une appli installée hors Play Store (service d'accessibilité, lecture des
+    notifications, accès à tous les fichiers).
+    Conséquences : pas de pastilles de notification sur les icônes, pas de geste
+    « verrouiller l'écran » via l'accessibilité. Les gestes notifications / réglages
+    rapides continuent de fonctionner (ils passent par la barre d'état).
+-->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:node="remove" />
+
+    <application>
+        <service
+            android:name="app.lawnchair.LawnchairAccessibilityService"
+            tools:node="remove" />
+        <service
+            android:name="com.android.launcher3.notification.NotificationListener"
+            tools:node="remove" />
+    </application>
+</manifest>

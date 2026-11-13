@@ -32,6 +32,13 @@ jobs:
           echo keyPassword=lawnchairperso >> keystore.properties
       - name: Compilation
         run: ./gradlew assembleLawnWithQuickstepPersoRelease
+      - name: Vérifier les permissions de l'APK
+        run: |
+          APK=$(find build/outputs/apk -name '*.apk' | head -1)
+          AAPT2=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -1)aapt2
+          $AAPT2 dump permissions "$APK" | sort
+          echo "--- services ---"
+          $AAPT2 dump xmltree --file AndroidManifest.xml "$APK" | grep -A3 "E: service" | grep "android:name" || true
       - name: Renommer l'APK
         run: |
           mkdir -p out

@@ -325,12 +325,13 @@ android {
             manifest.srcFile "github/AndroidManifest.xml"
         }
 
-        perso {
-            manifest.srcFile "github/AndroidManifest.xml"
-        }
-
         lawnWithQuickstepPerso {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        // Priorité la plus haute : retire les permissions sensibles (voir perso/AndroidManifest.xml)
+        lawnWithQuickstepPersoRelease {
+            manifest.srcFile "perso/AndroidManifest.xml"
         }
 
         nightly {
