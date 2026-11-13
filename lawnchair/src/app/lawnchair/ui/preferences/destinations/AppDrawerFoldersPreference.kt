@@ -145,13 +145,21 @@ fun AppDrawerFoldersPreference(
             }
             // Perso : toutes les couleurs du tiroir et de ses dossiers au même endroit
             val prefs2 = preferenceManager2()
-            PreferenceGroup(heading = stringResource(R.string.perso_colors_light_heading)) {
+            val autoColors = prefs2.drawerAutoColors.getAdapter()
+            PreferenceGroup(heading = stringResource(R.string.perso_colors_heading)) {
+                SwitchPreference(
+                    adapter = autoColors,
+                    label = stringResource(id = R.string.perso_auto_colors),
+                    description = stringResource(id = R.string.perso_auto_colors_desc),
+                )
+            }
+            if (!autoColors.state.value) PreferenceGroup(heading = stringResource(R.string.perso_colors_light_heading)) {
                 ColorPreference(preference = prefs2.appDrawerBackgroundColor)
                 ColorPreference(preference = prefs2.drawerFolderBackgroundColor)
                 ColorPreference(preference = prefs2.drawerFolderRowColor)
                 ColorPreference(preference = prefs2.drawerFolderTextColor)
             }
-            PreferenceGroup(heading = stringResource(R.string.perso_colors_dark_heading)) {
+            if (!autoColors.state.value) PreferenceGroup(heading = stringResource(R.string.perso_colors_dark_heading)) {
                 ColorPreference(preference = prefs2.appDrawerBackgroundColorDark)
                 ColorPreference(preference = prefs2.drawerFolderBackgroundColorDark)
                 ColorPreference(preference = prefs2.drawerFolderRowColorDark)

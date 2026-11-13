@@ -508,6 +508,13 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // Perso : couleurs du tiroir calculées depuis le thème du système (Material You)
+    val drawerAutoColors = preference(
+        key = booleanPreferencesKey(name = "drawer_auto_colors"),
+        defaultValue = true,
+        onSet = { reloadHelper.recreate() },
+    )
+
     // Perso : apparence des dossiers du tiroir (rectangles + fenêtre ouverte)
     val drawerFolderBackgroundColor = preference(
         key = stringPreferencesKey(name = "drawer_folder_bg_color"),
