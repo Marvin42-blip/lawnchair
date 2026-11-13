@@ -1,0 +1,50 @@
+name: Lawnchair Perso
+
+# Fabrique l'APK de la version perso à chaque modification de la branche « perso »,
+# et le publie dans l'onglet « Releases » pour le télécharger depuis le téléphone.
+on:
+  push:
+    branches:
+      - perso
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Clé de signature fixe (les mises à jour s'installent par-dessus)
+        run: |
+          echo storeFile=perso/perso.keystore >> keystore.properties
+          echo storePassword=lawnchairperso >> keystore.properties
+          echo keyAlias=perso >> keystore.properties
+          echo keyPassword=lawnchairperso >> keystore.properties
+      - name: Compilation
+        run: ./gradlew assembleLawnWithQuickstepPersoRelease
+      - name: Renommer l'APK
+        run: |
+          mkdir -p out
+          cp $(find build/outputs/apk -name '*.apk' | head -1) "out/Lawnchair-Perso-${{ github.run_number }}.apk"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Lawnchair-Perso-${{ github.run_number }}
+          path: out/*.apk
+      - name: Publier dans Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: perso-${{ github.run_number }}
+          name: Lawnchair Perso n°${{ github.run_number }}
+          body: Version perso de Lawnchair. Télécharger le fichier .apk ci-dessous depuis le téléphone, puis l'ouvrir pour l'installer.
+          files: out/*.apk
+          make_latest: true

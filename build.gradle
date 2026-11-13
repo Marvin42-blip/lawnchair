@@ -276,6 +276,12 @@ android {
             dimension "channel"
         }
 
+        // Version personnelle de Stéphane : s'installe à côté de Lawnchair
+        perso {
+            applicationId 'app.lawnchair.perso'
+            dimension "channel"
+        }
+
         play {
             applicationId "app.lawnchair.play"
             dimension "channel"
@@ -319,6 +325,14 @@ android {
             manifest.srcFile "github/AndroidManifest.xml"
         }
 
+        perso {
+            manifest.srcFile "github/AndroidManifest.xml"
+        }
+
+        lawnWithQuickstepPerso {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
         nightly {
             manifest.srcFile "nightly/AndroidManifest.xml"
             res.srcDirs = ["nightly/res"]
@@ -348,6 +362,12 @@ android {
 androidComponents {
     onVariants(selector().all()) { variant ->
         def channel = variant.productFlavors.last().second
+        if (channel == "perso") {
+            variant.resValues.put(
+                variant.makeResValueKey("string", "derived_app_name"),
+                new com.android.build.api.variant.ResValue("Lawnchair Perso", null)
+            )
+        }
         variant.outputs.forEach { output ->
             output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
         }
