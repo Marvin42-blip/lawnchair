@@ -841,6 +841,27 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is animated relative to the specified View. If the View is null, no animation
      * is played.
      */
+    /**
+     * Perso : dans un dossier du tiroir, le texte (noms des apps et titre) prend une couleur
+     * contrastée avec le fond choisi : foncée sur fond clair, claire sur fond foncé.
+     */
+    private void applyDrawerFolderTextColor() {
+        if (!LawnchairUtilsKt.isDrawerFolder(mInfo)) return;
+        int bg = LawnchairUtilsKt.resolveFolderBackgroundColorFor(getContext(), mInfo);
+        boolean lightBg = androidx.core.graphics.ColorUtils.calculateLuminance(bg) > 0.5;
+        int text = getContext().getColor(lightBg
+                ? android.R.color.system_neutral1_900 : android.R.color.system_neutral1_50);
+        for (View v : getIconsInReadingOrder()) {
+            if (v instanceof android.widget.TextView) {
+                ((android.widget.TextView) v).setTextColor(text);
+            }
+        }
+        if (mFolderName != null) {
+            mFolderName.setTextColor(text);
+            mFolderName.setHintTextColor(androidx.core.graphics.ColorUtils.setAlphaComponent(text, 0x99));
+        }
+    }
+
     private void animateOpen(List<ItemInfo> items, int pageNo) {
         if (!shouldAnimateOpen(items)) {
             return;
@@ -853,6 +874,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         centerAboutIcon();
         mItemsInvalidated = true;
         updateTextViewFocus();
+        applyDrawerFolderTextColor();
 
         mIsOpen = true;
 
