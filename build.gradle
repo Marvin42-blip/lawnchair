@@ -278,7 +278,7 @@ android {
 
         // Version personnelle de Stéphane : s'installe à côté de Lawnchair
         perso {
-            applicationId 'app.lawnchair.perso'
+            applicationId 'ch.deletescape.lawnchair.plah'
             dimension "channel"
         }
 
