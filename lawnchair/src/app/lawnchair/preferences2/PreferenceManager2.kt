@@ -517,6 +517,39 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = ColorOption.Default,
     )
 
+    // Perso : variantes pour le thème sombre (« par défaut » = couleurs sombres du thème)
+    val appDrawerBackgroundColorDark = preference(
+        key = stringPreferencesKey(name = "app_drawer_bg_color_dark"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
+    val drawerFolderBackgroundColorDark = preference(
+        key = stringPreferencesKey(name = "drawer_folder_bg_color_dark"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
+    val drawerFolderRowColorDark = preference(
+        key = stringPreferencesKey(name = "drawer_folder_row_color_dark"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
+    val drawerFolderTextColorDark = preference(
+        key = stringPreferencesKey(name = "drawer_folder_text_color_dark"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
     val drawerFolderBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "drawer_folder_bg_opacity"),
         defaultValue = 1f,

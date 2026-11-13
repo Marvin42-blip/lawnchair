@@ -145,8 +145,19 @@ fun AppDrawerFoldersPreference(
             }
             // Perso : toutes les couleurs du tiroir et de ses dossiers au même endroit
             val prefs2 = preferenceManager2()
-            PreferenceGroup(heading = stringResource(R.string.perso_drawer_colors_heading)) {
+            PreferenceGroup(heading = stringResource(R.string.perso_colors_light_heading)) {
                 ColorPreference(preference = prefs2.appDrawerBackgroundColor)
+                ColorPreference(preference = prefs2.drawerFolderBackgroundColor)
+                ColorPreference(preference = prefs2.drawerFolderRowColor)
+                ColorPreference(preference = prefs2.drawerFolderTextColor)
+            }
+            PreferenceGroup(heading = stringResource(R.string.perso_colors_dark_heading)) {
+                ColorPreference(preference = prefs2.appDrawerBackgroundColorDark)
+                ColorPreference(preference = prefs2.drawerFolderBackgroundColorDark)
+                ColorPreference(preference = prefs2.drawerFolderRowColorDark)
+                ColorPreference(preference = prefs2.drawerFolderTextColorDark)
+            }
+            PreferenceGroup(heading = stringResource(R.string.perso_opacity_heading)) {
                 SliderPreference(
                     label = stringResource(id = R.string.perso_drawer_bg_opacity),
                     adapter = prefs.drawerOpacity.getAdapter(),
@@ -154,7 +165,6 @@ fun AppDrawerFoldersPreference(
                     valueRange = 0F..1F,
                     showAsPercentage = true,
                 )
-                ColorPreference(preference = prefs2.drawerFolderBackgroundColor)
                 SliderPreference(
                     label = stringResource(id = R.string.perso_drawer_folder_bg_opacity),
                     adapter = prefs2.drawerFolderBackgroundOpacity.getAdapter(),
@@ -162,7 +172,6 @@ fun AppDrawerFoldersPreference(
                     valueRange = 0F..1F,
                     showAsPercentage = true,
                 )
-                ColorPreference(preference = prefs2.drawerFolderRowColor)
                 SliderPreference(
                     label = stringResource(id = R.string.perso_drawer_folder_row_opacity),
                     adapter = prefs2.drawerFolderRowOpacity.getAdapter(),
@@ -170,7 +179,6 @@ fun AppDrawerFoldersPreference(
                     valueRange = 0F..1F,
                     showAsPercentage = true,
                 )
-                ColorPreference(preference = prefs2.drawerFolderTextColor)
             }
             PreferenceGroup(heading = stringResource(R.string.folders_label)) {
                 PreferenceTemplate(

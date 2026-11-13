@@ -1106,4 +1106,11 @@
     <string name="perso_drawer_folder_row_color">Couleur des rectangles</string>
     <string name="perso_drawer_folder_row_opacity">Opacité des rectangles</string>
     <string name="perso_drawer_folder_text_color">Couleur du texte des rectangles</string>
+    <string name="perso_colors_light_heading">Couleurs — thème clair</string>
+    <string name="perso_colors_dark_heading">Couleurs — thème sombre</string>
+    <string name="perso_opacity_heading">Opacités</string>
+    <string name="perso_drawer_bg_color_dark">Fond du tiroir</string>
+    <string name="perso_drawer_folder_bg_color_dark">Fond des dossiers ouverts</string>
+    <string name="perso_drawer_folder_row_color_dark">Couleur des rectangles</string>
+    <string name="perso_drawer_folder_text_color_dark">Couleur du texte des rectangles</string>
 </resources>
