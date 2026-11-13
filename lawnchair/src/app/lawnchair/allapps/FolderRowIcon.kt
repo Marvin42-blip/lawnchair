@@ -12,4 +12,11 @@ class FolderRowIcon(context: Context, attrs: AttributeSet?) : FolderIcon(context
     override fun setIconVisible(visible: Boolean) {
         super.setIconVisible(false)
     }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        // L'animation d'ouverture du dossier a besoin des mesures de l'aperçu, que
+        // FolderIcon ne calcule qu'en dessinant l'aperçu (ici jamais dessiné).
+        previewItemManager.recomputePreviewDrawingParams()
+    }
 }
