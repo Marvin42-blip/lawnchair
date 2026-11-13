@@ -111,25 +111,31 @@ class LawnchairAlphabeticalAppsList<T>(
                 position++
             }
         } else {
+            // Perso : tous les dossiers en un seul bloc de rectangles (deux par ligne)
+            val folderInfos = mutableListOf<FolderInfo>()
             folderList.forEach { folderEntry ->
                 val resolvedApps = folderEntry.itemComponentKeys.mapNotNull { keyString ->
                     val componentKey = ComponentKey.fromString(keyString) ?: return@mapNotNull null
                     appsStore.getApp(componentKey) as? AppInfo
                 }
 
-                if (resolvedApps.size > 1) {
-                    val folderInfo = FolderInfo().apply {
-                        id = folderEntry.id
-                        title = folderEntry.title
-                        resolvedApps.forEach { add(it) }
-                    }
-                    mAdapterItems.add(AdapterItem.asFolder(folderInfo))
-                    position++
+                if (resolvedApps.isNotEmpty()) {
+                    folderInfos.add(
+                        FolderInfo().apply {
+                            id = folderEntry.id
+                            title = folderEntry.title
+                            resolvedApps.forEach { add(it) }
+                        },
+                    )
 
                     if (prefs.folderApps.get()) {
                         filteredList.addAll(resolvedApps)
                     }
                 }
+            }
+            if (folderInfos.isNotEmpty()) {
+                mAdapterItems.add(AdapterItem.asFolderGrid(folderInfos))
+                position++
             }
             val remainingApps = appList.filterNot { app -> filteredList.contains(app) && prefs.folderApps.get() }
             position = super.addAppsWithSections(remainingApps, position)

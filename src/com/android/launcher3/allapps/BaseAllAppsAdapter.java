@@ -34,6 +34,7 @@ import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -74,6 +75,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
     // LC-Feature: Folder support in All Apps, can be any ID
     public static final int VIEW_TYPE_FOLDER = 1 << 10;
+    // Perso: tous les dossiers du tiroir en rectangles de texte, sur deux colonnes
+    public static final int VIEW_TYPE_FOLDER_GRID = 1 << 11;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -138,6 +141,15 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             return item;
         }
 
+        // Perso: liste des dossiers affichés en rectangles
+        public java.util.List<FolderInfo> folderInfos = null;
+
+        public static AdapterItem asFolderGrid(java.util.List<FolderInfo> folders) {
+            AdapterItem item = new AdapterItem(VIEW_TYPE_FOLDER_GRID);
+            item.folderInfos = folders;
+            return item;
+        }
+
         public static AdapterItem asFolder(FolderInfo folderInfo) {
             AdapterItem item = new AdapterItem(VIEW_TYPE_FOLDER);
             item.folderInfo = folderInfo;
@@ -160,6 +172,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
          * as well. Returning true will prevent redrawing of thee item.
          */
         public boolean isContentSame(AdapterItem other) {
+            if (viewType == VIEW_TYPE_FOLDER_GRID) return false;
             return itemInfo == null && other.itemInfo == null;
         }
 
@@ -261,6 +274,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                         R.layout.private_space_header, parent, false));
             case VIEW_TYPE_BOTTOM_VIEW_TO_SCROLL_TO:
                 return new ViewHolder(new View(mActivityContext));
+            case VIEW_TYPE_FOLDER_GRID: {
+                LinearLayout grid = new LinearLayout(mActivityContext);
+                grid.setOrientation(LinearLayout.VERTICAL);
+                grid.setLayoutParams(new RecyclerView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                return new ViewHolder(grid);
+            }
             case VIEW_TYPE_FOLDER:
                 // LC-Feature: Folder support in All Apps
                 FrameLayout fl = new FrameLayout(mActivityContext);
@@ -359,6 +379,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_WORK_EDU_CARD:
                 ((WorkEduCard) holder.itemView).setPosition(position);
                 break;
+            case VIEW_TYPE_FOLDER_GRID:
+                bindFolderGrid((LinearLayout) holder.itemView,
+                        mApps.getAdapterItems().get(position).folderInfos);
+                break;
             case VIEW_TYPE_FOLDER:
                 // LC: Caddy/Folder in allapps 86b2b025a4f23a068818274020f37ad6d5268363
                 FolderInfo folderInfo = mApps.getAdapterItems().get(position).folderInfo;
@@ -398,4 +422,35 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         return (viewType & viewTypeMask) != 0;
     }
 
+    /** Perso: dessine les dossiers du tiroir en rectangles de texte, deux par ligne. */
+    private void bindFolderGrid(LinearLayout grid, java.util.List<FolderInfo> folders) {
+        grid.removeAllViews();
+        if (folders == null) return;
+        float density = mActivityContext.getResources().getDisplayMetrics().density;
+        int gap = Math.round(6 * density);
+        grid.setPadding(gap, gap, gap, gap * 2);
+        for (int i = 0; i < folders.size(); i += 2) {
+            LinearLayout row = new LinearLayout(mActivityContext);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            for (int j = i; j < i + 2; j++) {
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                lp.setMargins(gap, gap, gap, gap);
+                if (j < folders.size()) {
+                    FolderIcon icon = FolderIcon.inflateFolderAndIcon(
+                            R.layout.all_apps_folder_row, mActivityContext, row, folders.get(j));
+                    View name = icon.findViewById(R.id.folder_icon_name);
+                    FrameLayout.LayoutParams nlp = (FrameLayout.LayoutParams) name.getLayoutParams();
+                    nlp.topMargin = 0;
+                    name.setLayoutParams(nlp);
+                    icon.setIconVisible(false);
+                    icon.setOnLongClickListener(mOnIconLongClickListener);
+                    row.addView(icon, lp);
+                } else {
+                    row.addView(new View(mActivityContext), lp);
+                }
+            }
+            grid.addView(row);
+        }
+    }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Perso : fond discret des rectangles de dossiers (couleur du texte à 10 %) -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:color="?android:attr/textColorPrimary" android:alpha="0.20" />
+    <item android:color="?android:attr/textColorPrimary" android:alpha="0.09" />
+</selector>

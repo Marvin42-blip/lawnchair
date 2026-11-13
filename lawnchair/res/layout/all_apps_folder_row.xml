@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Perso : un dossier du tiroir = un rectangle avec son titre, sans icône -->
+<app.lawnchair.allapps.FolderRowIcon
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="52dp"
+    android:background="@drawable/folder_row_background"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:focusable="true">
+    <com.android.launcher3.views.DoubleShadowBubbleTextView
+        style="@style/BaseIcon.AllApps"
+        android:id="@+id/folder_icon_name"
+        android:focusable="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:ellipsize="end"
+        app:iconDisplay="all_apps" />
+</app.lawnchair.allapps.FolderRowIcon>
