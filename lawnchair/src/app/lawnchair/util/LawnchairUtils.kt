@@ -501,3 +501,63 @@ fun decodeSampledBitmapFromFile(path: String, reqWidth: Int, reqHeight: Int): Bi
     }
     return BitmapFactory.decodeFile(path, options)
 }
+
+
+// ---------------- Perso : dossiers du tiroir ----------------
+
+private fun customColorOrZero(context: Context, option: ColorOption): Int {
+    val entry = option.colorPreferenceEntry
+    val light = entry.lightColor(context)
+    if (light == 0) return 0
+    if (option is ColorOption.CustomColor) return light
+    return if (Utilities.isDarkTheme(context)) entry.darkColor(context) else light
+}
+
+/** Un dossier ouvert depuis le tiroir n'a pas d'emplacement sur l'accueil. */
+fun isDrawerFolder(info: com.android.launcher3.model.data.FolderInfo?): Boolean =
+    info != null && info.container == com.android.launcher3.model.data.ItemInfo.NO_ID
+
+/**
+ * Fond d'un dossier ouvert depuis le tiroir : la couleur choisie, sinon la couleur
+ * personnalisée du tiroir, sinon la couleur habituelle des dossiers.
+ */
+fun resolveDrawerFolderBackgroundColor(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    val own = customColorOrZero(context, prefs2.drawerFolderBackgroundColor.firstCached())
+    if (own != 0) return ColorUtils.setAlphaComponent(own, 255)
+    val drawer = customColorOrZero(context, prefs2.appDrawerBackgroundColor.firstCached())
+    if (drawer != 0) return ColorUtils.setAlphaComponent(drawer, 255)
+    return resolveFolderBackgroundColor(context)
+}
+
+fun getDrawerFolderBackgroundAlpha(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    return (prefs2.drawerFolderBackgroundOpacity.firstCached() * 255).roundToInt().coerceIn(0, 255)
+}
+
+/** Couleur de fond d'un dossier, selon qu'il vient du tiroir ou de l'accueil. */
+fun resolveFolderBackgroundColorFor(context: Context, info: com.android.launcher3.model.data.FolderInfo?): Int =
+    if (isDrawerFolder(info)) resolveDrawerFolderBackgroundColor(context) else resolveFolderBackgroundColor(context)
+
+fun getFolderBackgroundAlphaFor(context: Context, info: com.android.launcher3.model.data.FolderInfo?): Int =
+    if (isDrawerFolder(info)) getDrawerFolderBackgroundAlpha(context) else getFolderBackgroundAlpha(context)
+
+/** Couleur de départ de l'animation d'ouverture (aperçu rond, ou fond final pour le tiroir). */
+fun resolveFolderPreviewColorFor(context: Context, info: com.android.launcher3.model.data.FolderInfo?): Int =
+    if (isDrawerFolder(info)) resolveDrawerFolderBackgroundColor(context) else resolveFolderPreviewColor(context)
+
+/** Fond des rectangles de dossiers : couleur choisie (ou couleur du texte) + opacité. */
+fun resolveDrawerFolderRowColor(context: Context, textColor: Int): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    val own = customColorOrZero(context, prefs2.drawerFolderRowColor.firstCached())
+    val base = if (own != 0) own else textColor
+    val alpha = (prefs2.drawerFolderRowOpacity.firstCached() * 255).roundToInt().coerceIn(0, 255)
+    return ColorUtils.setAlphaComponent(base, alpha)
+}
+
+/** Couleur du texte des rectangles, ou 0 pour garder celle du tiroir. */
+fun resolveDrawerFolderTextColor(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    val own = customColorOrZero(context, prefs2.drawerFolderTextColor.firstCached())
+    return if (own != 0) ColorUtils.setAlphaComponent(own, 255) else 0
+}

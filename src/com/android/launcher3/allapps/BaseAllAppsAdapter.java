@@ -444,6 +444,18 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                     nlp.topMargin = 0;
                     name.setLayoutParams(nlp);
                     icon.setIconVisible(false);
+                    // Perso : couleurs choisies dans « Dossiers du tiroir des applis »
+                    int textColor = app.lawnchair.util.LawnchairUtilsKt
+                            .resolveDrawerFolderTextColor(mActivityContext);
+                    if (textColor != 0) {
+                        ((android.widget.TextView) name).setTextColor(textColor);
+                    }
+                    android.graphics.drawable.GradientDrawable bg =
+                            new android.graphics.drawable.GradientDrawable();
+                    bg.setCornerRadius(14 * density);
+                    bg.setColor(app.lawnchair.util.LawnchairUtilsKt.resolveDrawerFolderRowColor(
+                            mActivityContext, ((android.widget.TextView) name).getCurrentTextColor()));
+                    icon.setBackground(bg);
                     icon.setOnLongClickListener(mOnIconLongClickListener);
                     row.addView(icon, lp);
                 } else {

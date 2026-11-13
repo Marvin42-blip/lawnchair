@@ -188,8 +188,8 @@ public class FolderAnimationManager implements FolderAnimationCreator {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background (respects Lawnchair folder color pref).
-        int initialColor = LawnchairUtilsKt.resolveFolderPreviewColor(mContext);
-        int finalColor = LawnchairUtilsKt.resolveFolderBackgroundColor(mContext);
+        int initialColor = LawnchairUtilsKt.resolveFolderPreviewColorFor(mContext, mFolder.getInfo());
+        int finalColor = LawnchairUtilsKt.resolveFolderBackgroundColorFor(mContext, mFolder.getInfo());
 
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);

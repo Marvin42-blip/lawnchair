@@ -267,8 +267,8 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 val folderBackground = folder.background as GradientDrawable
                 // Set up the Folder background (respects Lawnchair folder color pref).
                 val isOpening = animationData.isOpening
-                val initialColor = app.lawnchair.util.resolveFolderPreviewColor(context)
-                val finalColor = app.lawnchair.util.resolveFolderBackgroundColor(context)
+                val initialColor = app.lawnchair.util.resolveFolderPreviewColorFor(context, folder.info)
+                val finalColor = app.lawnchair.util.resolveFolderBackgroundColorFor(context, folder.info)
                 folderBackground.mutate()
                 folderBackground.setColor(if (isOpening) initialColor else finalColor)
                 // TODO: convert to spring animation?

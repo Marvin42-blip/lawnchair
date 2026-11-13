@@ -39,6 +39,9 @@ import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -139,6 +142,35 @@ fun AppDrawerFoldersPreference(
                     label = stringResource(id = R.string.apps_in_folder_label),
                     description = stringResource(id = R.string.apps_in_folder_description),
                 )
+            }
+            // Perso : toutes les couleurs du tiroir et de ses dossiers au même endroit
+            val prefs2 = preferenceManager2()
+            PreferenceGroup(heading = stringResource(R.string.perso_drawer_colors_heading)) {
+                ColorPreference(preference = prefs2.appDrawerBackgroundColor)
+                SliderPreference(
+                    label = stringResource(id = R.string.perso_drawer_bg_opacity),
+                    adapter = prefs.drawerOpacity.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+                ColorPreference(preference = prefs2.drawerFolderBackgroundColor)
+                SliderPreference(
+                    label = stringResource(id = R.string.perso_drawer_folder_bg_opacity),
+                    adapter = prefs2.drawerFolderBackgroundOpacity.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+                ColorPreference(preference = prefs2.drawerFolderRowColor)
+                SliderPreference(
+                    label = stringResource(id = R.string.perso_drawer_folder_row_opacity),
+                    adapter = prefs2.drawerFolderRowOpacity.getAdapter(),
+                    step = 0.02f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+                ColorPreference(preference = prefs2.drawerFolderTextColor)
             }
             PreferenceGroup(heading = stringResource(R.string.folders_label)) {
                 PreferenceTemplate(

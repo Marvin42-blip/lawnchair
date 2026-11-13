@@ -682,6 +682,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     void bind(FolderInfo info) {
         mInfo = info;
+        // Perso : les dossiers du tiroir ont leurs propres couleurs
+        mBackground.setColor(LawnchairUtilsKt.resolveFolderBackgroundColorFor(getContext(), info));
+        mBackground.setAlpha(LawnchairUtilsKt.getFolderBackgroundAlphaFor(getContext(), info));
         mFromTitle = info.title;
         mFromLabelState = info.getFromLabelState();
         updateItemLocationsInDatabaseBatch(true);

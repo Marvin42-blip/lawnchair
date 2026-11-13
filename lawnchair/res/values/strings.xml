@@ -1098,4 +1098,12 @@
     <string name="lawnchair_action_failed">Failed to trigger action</string>
 
     <string name="please_wait">Please wait…</string>
+    <!-- Perso : couleurs du tiroir et de ses dossiers -->
+    <string name="perso_drawer_colors_heading">Couleurs</string>
+    <string name="perso_drawer_bg_opacity">Opacité du fond du tiroir</string>
+    <string name="perso_drawer_folder_bg_color">Fond des dossiers ouverts</string>
+    <string name="perso_drawer_folder_bg_opacity">Opacité des dossiers ouverts</string>
+    <string name="perso_drawer_folder_row_color">Couleur des rectangles</string>
+    <string name="perso_drawer_folder_row_opacity">Opacité des rectangles</string>
+    <string name="perso_drawer_folder_text_color">Couleur du texte des rectangles</string>
 </resources>

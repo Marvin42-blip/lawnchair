@@ -508,6 +508,43 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // Perso : apparence des dossiers du tiroir (rectangles + fenêtre ouverte)
+    val drawerFolderBackgroundColor = preference(
+        key = stringPreferencesKey(name = "drawer_folder_bg_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
+    val drawerFolderBackgroundOpacity = preference(
+        key = floatPreferencesKey(name = "drawer_folder_bg_opacity"),
+        defaultValue = 1f,
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val drawerFolderRowColor = preference(
+        key = stringPreferencesKey(name = "drawer_folder_row_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
+    val drawerFolderRowOpacity = preference(
+        key = floatPreferencesKey(name = "drawer_folder_row_opacity"),
+        defaultValue = 0.12f,
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val drawerFolderTextColor = preference(
+        key = stringPreferencesKey(name = "drawer_folder_text_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
     val folderBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_background_opacity),
