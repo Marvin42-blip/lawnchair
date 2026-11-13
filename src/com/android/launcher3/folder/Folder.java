@@ -1058,8 +1058,22 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mContent.snapToPageImmediately(mContent.getDestinationPage());
 
         cancelRunningAnimations();
-        AnimatorSet animatorSet = getFolderAnimationManager()
-                .createAnimatorSet(/* isOpening */ false);
+        // Perso : les dossiers du tiroir (rectangles sans aperçu) se ferment par un
+        // simple fondu, au lieu de se replier vers un aperçu invisible.
+        final boolean drawerFolder = LawnchairUtilsKt.isDrawerFolder(mInfo);
+        AnimatorSet animatorSet;
+        if (drawerFolder) {
+            animatorSet = new AnimatorSet();
+            animatorSet.playTogether(
+                    android.animation.ObjectAnimator.ofFloat(this, View.ALPHA, getAlpha(), 0f),
+                    android.animation.ObjectAnimator.ofFloat(this, View.SCALE_X, getScaleX(), 0.94f),
+                    android.animation.ObjectAnimator.ofFloat(this, View.SCALE_Y, getScaleY(), 0.94f));
+            animatorSet.setDuration(150);
+            animatorSet.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        } else {
+            animatorSet = getFolderAnimationManager()
+                    .createAnimatorSet(/* isOpening */ false);
+        }
 
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -1078,6 +1092,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     }
                 }
                 closeComplete(true);
+                if (drawerFolder) {
+                    setAlpha(1f);
+                    setScaleX(1f);
+                    setScaleY(1f);
+                }
                 announceAccessibilityChanges();
                 mIsAnimatingClosed = false;
             }
