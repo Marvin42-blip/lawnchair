@@ -444,19 +444,44 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                     nlp.topMargin = 0;
                     name.setLayoutParams(nlp);
                     icon.setIconVisible(false);
-                    // Perso : couleurs choisies dans « Dossiers du tiroir des applis »
+                    // Perso : couleurs choisies dans « Dossiers du tiroir des applis »,
+                    // en damier (deux tons alternés) et ambre au toucher, comme l'icône de l'appli.
+                    android.widget.TextView label = (android.widget.TextView) name;
                     int textColor = app.lawnchair.util.LawnchairUtilsKt
                             .resolveDrawerFolderTextColor(mActivityContext);
-                    if (textColor != 0) {
-                        ((android.widget.TextView) name).setTextColor(textColor);
-                    }
-                    android.graphics.drawable.GradientDrawable bg =
+                    if (textColor == 0) textColor = label.getCurrentTextColor();
+                    int baseColor = app.lawnchair.util.LawnchairUtilsKt
+                            .resolveDrawerFolderRowColor(mActivityContext, textColor);
+                    boolean altTone = ((j / 2) + (j % 2)) % 2 == 1;
+                    int toneColor = altTone
+                            ? androidx.core.graphics.ColorUtils.compositeColors(
+                                    androidx.core.graphics.ColorUtils.setAlphaComponent(textColor, 0x2E),
+                                    baseColor)
+                            : baseColor;
+                    float radius = app.lawnchair.util.LawnchairUtilsKt
+                            .getDrawerFolderRowCorner(mActivityContext) * 26 * density;
+                    android.graphics.drawable.GradientDrawable normal =
                             new android.graphics.drawable.GradientDrawable();
-                    bg.setCornerRadius(app.lawnchair.util.LawnchairUtilsKt
-                            .getDrawerFolderRowCorner(mActivityContext) * 26 * density);
-                    bg.setColor(app.lawnchair.util.LawnchairUtilsKt.resolveDrawerFolderRowColor(
-                            mActivityContext, ((android.widget.TextView) name).getCurrentTextColor()));
+                    normal.setCornerRadius(radius);
+                    normal.setColor(toneColor);
+                    android.graphics.drawable.GradientDrawable pressed =
+                            new android.graphics.drawable.GradientDrawable();
+                    pressed.setCornerRadius(radius);
+                    pressed.setColor(0xFFF2B84B);
+                    android.graphics.drawable.StateListDrawable bg =
+                            new android.graphics.drawable.StateListDrawable();
+                    bg.addState(new int[]{android.R.attr.state_pressed}, pressed);
+                    bg.addState(new int[]{}, normal);
+                    bg.setExitFadeDuration(180);
                     icon.setBackground(bg);
+                    icon.setForeground(null);
+                    if (icon instanceof app.lawnchair.allapps.FolderRowIcon rowIcon) {
+                        rowIcon.setShapes(java.util.List.of(normal, pressed));
+                    }
+                    label.setDuplicateParentStateEnabled(true);
+                    label.setTextColor(new android.content.res.ColorStateList(
+                            new int[][]{{android.R.attr.state_pressed}, {}},
+                            new int[]{0xFF1E3354, textColor}));
                     icon.setOnLongClickListener(mOnIconLongClickListener);
                     row.addView(icon, lp);
                 } else {

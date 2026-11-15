@@ -22,9 +22,14 @@ class FolderRowIcon(context: Context, attrs: AttributeSet?) : FolderIcon(context
         previewItemManager.recomputePreviewDrawingParams()
     }
 
+    /** Formes du fond (normal et appuyé), dont l'arrondi suit la hauteur du rectangle. */
+    var shapes: List<GradientDrawable> = emptyList()
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         // Arrondi réglable : proportion de la demi-hauteur du rectangle
-        (background as? GradientDrawable)?.cornerRadius = getDrawerFolderRowCorner(context) * h / 2f
+        val radius = getDrawerFolderRowCorner(context) * h / 2f
+        (background as? GradientDrawable)?.cornerRadius = radius
+        shapes.forEach { it.cornerRadius = radius }
     }
 }
