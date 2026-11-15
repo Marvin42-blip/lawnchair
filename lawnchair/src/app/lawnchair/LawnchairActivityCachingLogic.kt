@@ -90,7 +90,50 @@ class LawnchairActivityCachingLogic @Inject constructor(
                 // Make sure this default icon always matches BaseIconCache#getDefaultIcon
                 return cache.getDefaultIcon(info.user)
             }
-            return li.createBadgedIconBitmap(iconDrawable, iconOptions)
+            return li.createBadgedIconBitmap(squareIconToAdaptive(iconDrawable), iconOptions)
+        }
+    }
+
+    /**
+     * Perso : une icône « classique » carrée et opaque (cas des applis installées depuis le
+     * web) est transformée en icône adaptative pleine, pour être découpée à la forme des
+     * autres icônes au lieu de rester carrée. Les icônes déjà rondes (coins transparents)
+     * ne sont pas touchées.
+     */
+    private fun squareIconToAdaptive(icon: android.graphics.drawable.Drawable): android.graphics.drawable.Drawable {
+        if (icon is android.graphics.drawable.AdaptiveIconDrawable) return icon
+        return try {
+            val probeSize = 64
+            val probe = android.graphics.Bitmap.createBitmap(probeSize, probeSize, android.graphics.Bitmap.Config.ARGB_8888)
+            android.graphics.Canvas(probe).let { c ->
+                icon.setBounds(0, 0, probeSize, probeSize)
+                icon.draw(c)
+            }
+            val m = 2
+            val corners = intArrayOf(
+                probe.getPixel(m, m), probe.getPixel(probeSize - 1 - m, m),
+                probe.getPixel(m, probeSize - 1 - m), probe.getPixel(probeSize - 1 - m, probeSize - 1 - m),
+            )
+            if (corners.any { android.graphics.Color.alpha(it) < 200 }) {
+                probe.recycle()
+                return icon
+            }
+            val background = corners[0]
+            probe.recycle()
+            // Calque adaptatif : l'icône occupe les 2/3 centraux, soit la zone visible après découpe.
+            val size = 216
+            val layer = android.graphics.Bitmap.createBitmap(size, size, android.graphics.Bitmap.Config.ARGB_8888)
+            android.graphics.Canvas(layer).let { c ->
+                c.drawColor(background)
+                icon.setBounds(size / 6, size / 6, size - size / 6, size - size / 6)
+                icon.draw(c)
+            }
+            android.graphics.drawable.AdaptiveIconDrawable(
+                android.graphics.drawable.ColorDrawable(background),
+                android.graphics.drawable.BitmapDrawable(context.resources, layer),
+            )
+        } catch (_: Exception) {
+            icon
         }
     }
 
