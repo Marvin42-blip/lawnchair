@@ -395,7 +395,15 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         CellLayout page = mViewCache.getView(R.layout.folder_page, getContext(), this);
         // Lawnchair: Find the correct folder size depending on which parent owned them
         if (mFolder.isInAppDrawer()) {
-            page.setCellDimensions(grid.getAllAppsProfile().getCellWidthPx(), grid.getAllAppsProfile().getCellHeightPx());
+            // Perso : une case de dossier du tiroir doit toujours contenir l'icône et son nom,
+            // même si la hauteur des lignes du tiroir a été réduite dans les réglages.
+            var allApps = grid.getAllAppsProfile();
+            int pad = Math.round(8 * getResources().getDisplayMetrics().density);
+            int minCellHeight = allApps.getIconSizePx() + allApps.getIconDrawablePaddingPx()
+                    + Utilities.calculateTextHeight(allApps.getIconTextSizePx()) + pad * 2;
+            int minCellWidth = allApps.getIconSizePx() + pad * 2;
+            page.setCellDimensions(Math.max(allApps.getCellWidthPx(), minCellWidth),
+                    Math.max(allApps.getCellHeightPx(), minCellHeight));
         } else {
             page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         }
