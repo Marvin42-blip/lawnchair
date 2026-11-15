@@ -534,11 +534,8 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             return 0;
         }
         int maxPageHeight = 0;
-        boolean fullGrid = mFolder != null && mFolder.isInAppDrawer();
         for (int i = 0; i < getPageCount(); i++) {
-            maxPageHeight = Math.max(maxPageHeight, fullGrid
-                    ? getPageAt(i).getDesiredHeight()
-                    : getPageAt(i).getDesiredHeightForOccupiedRows());
+            maxPageHeight = Math.max(maxPageHeight, getPageAt(i).getDesiredHeightForOccupiedRows());
         }
         return maxPageHeight + getPaddingTop() + getPaddingBottom();
     }

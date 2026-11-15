@@ -111,8 +111,9 @@ public class FolderGridOrganizer {
      */
     private void calculateGridSize(int count) {
         if (mFixedFullGrid) {
+            // Largeur fixe (toutes les colonnes), hauteur selon le nombre d'apps
             mCountX = mMaxCountX;
-            mCountY = mMaxCountY;
+            mCountY = Math.max(1, Math.min(mMaxCountY, (count + mMaxCountX - 1) / mMaxCountX));
             return;
         }
         boolean done;

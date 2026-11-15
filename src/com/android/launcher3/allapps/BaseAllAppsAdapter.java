@@ -474,14 +474,20 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                     pressed.setColor(0xFFF2B84B);
                     android.graphics.drawable.StateListDrawable bg =
                             new android.graphics.drawable.StateListDrawable();
+                    // Une forme distincte pour l'état « ouvert » : partager la même forme
+                    // entre deux états la rendait transparente après le fondu.
+                    android.graphics.drawable.GradientDrawable opened =
+                            new android.graphics.drawable.GradientDrawable();
+                    opened.setCornerRadius(radius);
+                    opened.setColor(0xFFF2B84B);
                     bg.addState(new int[]{android.R.attr.state_pressed}, pressed);
-                    bg.addState(new int[]{android.R.attr.state_activated}, pressed);
+                    bg.addState(new int[]{android.R.attr.state_activated}, opened);
                     bg.addState(new int[]{}, normal);
                     bg.setExitFadeDuration(180);
                     icon.setBackground(bg);
                     icon.setForeground(null);
                     if (icon instanceof app.lawnchair.allapps.FolderRowIcon rowIcon) {
-                        rowIcon.setShapes(java.util.List.of(normal, pressed));
+                        rowIcon.setShapes(java.util.List.of(normal, pressed, opened));
                     }
                     label.setDuplicateParentStateEnabled(true);
                     label.setTextColor(new android.content.res.ColorStateList(
