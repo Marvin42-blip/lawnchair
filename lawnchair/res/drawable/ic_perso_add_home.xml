@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Perso : maison avec un + (Ajouter au bureau) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24"
+    android:tint="?android:attr/textColorPrimary">
+    <path android:fillColor="#FF000000"
+        android:pathData="M12,3L2,12h3v8h6v-6h2v6h6v-8h3L12,3zM17,11h-2v2h-2v-2h-2V9h2V7h2v2h2v2z" />
+</vector>

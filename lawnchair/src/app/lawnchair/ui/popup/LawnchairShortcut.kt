@@ -84,6 +84,16 @@ class LawnchairShortcut {
                         )
                         true
                     },
+                    // Perso : recréer ce dossier sur l'écran d'accueil
+                    OptionsPopupView.OptionItem(
+                        launcher,
+                        R.string.perso_add_folder_to_home,
+                        R.drawable.ic_perso_add_home,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) {
+                        app.lawnchair.allapps.DrawerFolderToHome.addToHome(folderIcon, folderIcon.mInfo)
+                        true
+                    },
                 ),
                 true,
             ) != null

@@ -29,7 +29,8 @@ object DrawerFolderToHome {
         return true
     }
 
-    private fun addToHome(anchor: View, drawerFolder: FolderInfo) {
+    @JvmStatic
+    fun addToHome(anchor: View, drawerFolder: FolderInfo) {
         val launcher = Launcher.getLauncher(anchor.context)
         val workspace = launcher.workspace
         val cell = IntArray(2)
