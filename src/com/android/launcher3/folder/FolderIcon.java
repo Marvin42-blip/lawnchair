@@ -231,6 +231,9 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         icon.mPreviewVerifier = createFolderGridOrganizer(activity.getDeviceProfile());
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
+        if (folderInfo.container != ItemInfo.NO_ID) {
+            app.lawnchair.folder.PersoFolderIcons.apply(icon);
+        }
 
         return icon;
     }
@@ -598,6 +601,17 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         if (!mBackgroundIsVisible) return;
 
+        // Perso : icône personnalisée à la place de l'aperçu du dossier
+        if (mPersoCustomIcon != null) {
+            int iconSize = mActivity.getDeviceProfile().iconSizePx;
+            int left = (getWidth() - iconSize) / 2;
+            int top = getPaddingTop();
+            mPersoCustomIcon.setBounds(left, top, left + iconSize, top + iconSize);
+            mPersoCustomIcon.draw(canvas);
+            drawDot(canvas);
+            return;
+        }
+
         mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
@@ -613,6 +627,20 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         }
 
         drawDot(canvas);
+    }
+
+    /** Perso : icône personnalisée du dossier (null = aperçu habituel). */
+    @Nullable
+    private android.graphics.drawable.Drawable mPersoCustomIcon;
+
+    public void setPersoCustomIcon(@Nullable android.graphics.drawable.Drawable icon) {
+        if (mPersoCustomIcon == icon) return;
+        mPersoCustomIcon = icon;
+        invalidate();
+    }
+
+    public boolean hasPersoCustomIcon() {
+        return mPersoCustomIcon != null;
     }
 
     public void drawDot(Canvas canvas) {

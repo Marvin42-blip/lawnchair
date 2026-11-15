@@ -207,6 +207,10 @@ data class SelectIcon(
     val componentKey: String,
 ) : PreferenceRoute
 
+// Perso : choix de l'icône personnalisée d'un dossier du bureau
+@Serializable
+data class SelectFolderIcon(val folderId: Int) : PreferenceRoute
+
 // default to empty
 @Serializable
 data class IconPicker(val packageName: String = "") : PreferenceRoute

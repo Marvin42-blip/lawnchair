@@ -1991,6 +1991,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 dragOptions.preDragEndScale = (float) mAllAppsIconSize / btv.getIconSize();
             }
         }
+        // Perso : appui long sur un dossier du bureau → menu (icône personnalisée)
+        if (child instanceof FolderIcon && !dragOptions.isAccessibleDrag
+                && dragObject.container != ItemInfo.NO_ID) {
+            dragOptions.preDragCondition = app.lawnchair.folder.PersoFolderIcons
+                    .showHomeFolderPopup(mLauncher, (FolderIcon) child);
+        }
 
         boolean lockHomeScreen = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getLockHomeScreen());
         if (lockHomeScreen) {

@@ -508,6 +508,13 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // Perso : les dossiers prennent la même forme que les icônes
+    val folderShapeFollowsIcon = preference(
+        key = booleanPreferencesKey(name = "perso_folder_shape_follows_icon"),
+        defaultValue = true,
+        onSet = { reloadHelper.reloadIcons() },
+    )
+
     // Perso : couleurs du tiroir calculées depuis le thème du système (Material You)
     val drawerAutoColors = preference(
         key = booleanPreferencesKey(name = "drawer_auto_colors"),

@@ -222,6 +222,10 @@ fun PreferenceNavigation(
             val key = ComponentKey.fromString(componentKey)!!
             SelectIconPreference(key)
         }
+        composable<SelectFolderIcon> { backStackEntry ->
+            val args: SelectFolderIcon = backStackEntry.toRoute()
+            app.lawnchair.folder.SelectFolderIconPreference(args.folderId)
+        }
         composable<IconPicker> { backStackEntry ->
             val args: IconPicker = backStackEntry.toRoute()
             IconPickerPreference(packageName = args.packageName)

@@ -485,6 +485,8 @@ class LawnchairLauncher : QuickstepLauncher() {
     override fun onResume() {
         super.onResume()
         restartIfPending()
+        // Perso : icônes personnalisées des dossiers du bureau (au retour du choix d'icône)
+        app.lawnchair.folder.PersoFolderIcons.refreshAll(this)
         refreshPredictionContainersFromModel()
 
         dragLayer.viewTreeObserver.addOnDrawListener(

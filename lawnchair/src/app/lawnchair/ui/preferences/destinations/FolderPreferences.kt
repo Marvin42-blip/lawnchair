@@ -51,15 +51,22 @@ fun FolderPreferences(
             .firstOrNull { it.value == folderIconShapeAdapter.state.value }
             ?.label?.invoke()
             ?: stringResource(id = R.string.custom)
+        val followsIconAdapter = prefs2.folderShapeFollowsIcon.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
-            NavigationActionPreference(
-                label = stringResource(id = R.string.folder_shape_label),
-                destination = GeneralIconShape(ShapeRoute.FOLDER_SHAPE),
-                subtitle = folderIconShapeSubtitle,
-                endWidget = {
-                    IconShapePreview(iconShape = folderIconShapeAdapter.state.value)
-                },
+            SwitchPreference(
+                adapter = followsIconAdapter,
+                label = stringResource(id = R.string.perso_folder_shape_follows_icon),
             )
+            ExpandAndShrink(visible = !followsIconAdapter.state.value) {
+                NavigationActionPreference(
+                    label = stringResource(id = R.string.folder_shape_label),
+                    destination = GeneralIconShape(ShapeRoute.FOLDER_SHAPE),
+                    subtitle = folderIconShapeSubtitle,
+                    endWidget = {
+                        IconShapePreview(iconShape = folderIconShapeAdapter.state.value)
+                    },
+                )
+            }
             ColorPreference(preference = prefs2.folderColor)
             SliderPreference(
                 label = stringResource(id = R.string.folder_preview_bg_opacity_label),

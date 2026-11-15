@@ -1118,4 +1118,8 @@
     <string name="perso_auto_colors_desc">Le tiroir, les dossiers et les rectangles suivent les couleurs du système (clair ou sombre, teintes du fond d\'écran)</string>
     <string name="perso_shape_heading">Forme des rectangles</string>
     <string name="perso_add_folder_to_home">Ajouter au bureau</string>
+    <string name="perso_folder_shape_follows_icon">Même forme que les icônes</string>
+    <string name="perso_folder_custom_icon">Icône personnalisée</string>
+    <string name="perso_folder_default_icon">Icône par défaut</string>
+    <string name="perso_folder_icon_gallery">Choisir une image</string>
 </resources>

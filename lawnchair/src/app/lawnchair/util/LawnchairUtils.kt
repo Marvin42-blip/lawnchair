@@ -217,6 +217,10 @@ fun getCustomFolderColor(context: Context): Int {
 
 /** Closed-folder preview circle color (includes preview opacity). */
 fun resolveFolderPreviewColor(context: Context): Int {
+    // Perso : couleurs automatiques → l'aperçu suit le thème clair/sombre du système
+    if (isDrawerAutoColors(context)) {
+        return ColorUtils.setAlphaComponent(autoDrawerSurface(context), getFolderPreviewAlpha(context))
+    }
     val custom = getCustomFolderColor(context)
     val base = if (custom != 0) {
         custom
@@ -231,6 +235,8 @@ fun resolveFolderPreviewColor(context: Context): Int {
  * Opacity is applied separately via [getFolderBackgroundAlpha] on the drawable.
  */
 fun resolveFolderBackgroundColor(context: Context): Int {
+    // Perso : couleurs automatiques → le dossier ouvert suit le thème clair/sombre du système
+    if (isDrawerAutoColors(context)) return ColorUtils.setAlphaComponent(autoDrawerSurface(context), 255)
     val custom = getCustomFolderColor(context)
     return if (custom != 0) {
         custom

@@ -848,7 +848,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private float mPersoNameBaseSize = -1f;
 
     private void applyDrawerFolderTextColor() {
-        if (!LawnchairUtilsKt.isDrawerFolder(mInfo)) return;
+        // Perso : s'applique aussi aux dossiers du bureau (titre lisible quel que soit le thème)
+        if (mInfo == null) return;
         int bg = LawnchairUtilsKt.resolveFolderBackgroundColorFor(getContext(), mInfo);
         boolean lightBg = androidx.core.graphics.ColorUtils.calculateLuminance(bg) > 0.5;
         int text = getContext().getColor(lightBg
