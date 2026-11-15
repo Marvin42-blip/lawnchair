@@ -497,7 +497,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                             new int[][]{{android.R.attr.state_pressed},
                                     {android.R.attr.state_activated}, {}},
                             new int[]{0xFF1E3354, 0xFF1E3354, textColor}));
-                    icon.setOnLongClickListener(mOnIconLongClickListener);
+                    // Perso : appui long → « Ajouter au bureau »
+                    final FolderInfo drawerFolder = folders.get(j);
+                    icon.setOnLongClickListener(v -> app.lawnchair.allapps.DrawerFolderToHome
+                            .showMenu(v, drawerFolder));
                     row.addView(icon, lp);
                 } else {
                     row.addView(new View(mActivityContext), lp);
