@@ -490,6 +490,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                         rowIcon.setShapes(java.util.List.of(normal, pressed, opened));
                     }
                     label.setDuplicateParentStateEnabled(true);
+                    // Perso : titre un peu plus grand que les noms d'apps
+                    label.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,
+                            label.getTextSize() * 1.15f);
                     label.setTextColor(new android.content.res.ColorStateList(
                             new int[][]{{android.R.attr.state_pressed},
                                     {android.R.attr.state_activated}, {}},

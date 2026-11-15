@@ -845,6 +845,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Perso : dans un dossier du tiroir, le texte (noms des apps et titre) prend une couleur
      * contrastée avec le fond choisi : foncée sur fond clair, claire sur fond foncé.
      */
+    private float mPersoNameBaseSize = -1f;
+
     private void applyDrawerFolderTextColor() {
         if (!LawnchairUtilsKt.isDrawerFolder(mInfo)) return;
         int bg = LawnchairUtilsKt.resolveFolderBackgroundColorFor(getContext(), mInfo);
@@ -857,6 +859,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             }
         }
         if (mFolderName != null) {
+            // Perso : nom du dossier ouvert un peu plus grand (calculé une seule fois)
+            if (mPersoNameBaseSize < 0) {
+                mPersoNameBaseSize = mFolderName.getTextSize();
+                mFolderName.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,
+                        mPersoNameBaseSize * 1.2f);
+            }
             mFolderName.setTextColor(text);
             mFolderName.setHintTextColor(androidx.core.graphics.ColorUtils.setAlphaComponent(text, 0x99));
         }
