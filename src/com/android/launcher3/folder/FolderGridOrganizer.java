@@ -81,6 +81,17 @@ public class FolderGridOrganizer {
         return this;
     }
 
+    // Perso : les dossiers du tiroir ont toujours la grille complète (même taille pour tous)
+    private boolean mFixedFullGrid = false;
+
+    public FolderGridOrganizer setFixedFullGrid(boolean fixed) {
+        if (fixed != mFixedFullGrid) {
+            mFixedFullGrid = fixed;
+            mNumItemsInFolder = -1;
+        }
+        return this;
+    }
+
     public int getCountX() {
         return mCountX;
     }
@@ -99,6 +110,11 @@ public class FolderGridOrganizer {
      * maintaining the restrictions of {@link #mMaxCountX} &amp; {@link #mMaxCountY}.
      */
     private void calculateGridSize(int count) {
+        if (mFixedFullGrid) {
+            mCountX = mMaxCountX;
+            mCountY = mMaxCountY;
+            return;
+        }
         boolean done;
         int gridCountX = mCountX;
         int gridCountY = mCountY;

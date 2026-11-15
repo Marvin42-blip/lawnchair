@@ -443,7 +443,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                     FrameLayout.LayoutParams nlp = (FrameLayout.LayoutParams) name.getLayoutParams();
                     nlp.topMargin = 0;
                     name.setLayoutParams(nlp);
-                    icon.setIconVisible(false);
+                    if (icon instanceof app.lawnchair.allapps.FolderRowIcon previewIcon) {
+                        previewIcon.hidePreview();
+                    } else {
+                        icon.setIconVisible(false);
+                    }
                     // Perso : couleurs choisies dans « Dossiers du tiroir des applis »,
                     // en damier (deux tons alternés) et ambre au toucher, comme l'icône de l'appli.
                     android.widget.TextView label = (android.widget.TextView) name;
@@ -471,6 +475,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                     android.graphics.drawable.StateListDrawable bg =
                             new android.graphics.drawable.StateListDrawable();
                     bg.addState(new int[]{android.R.attr.state_pressed}, pressed);
+                    bg.addState(new int[]{android.R.attr.state_activated}, pressed);
                     bg.addState(new int[]{}, normal);
                     bg.setExitFadeDuration(180);
                     icon.setBackground(bg);
@@ -480,8 +485,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                     }
                     label.setDuplicateParentStateEnabled(true);
                     label.setTextColor(new android.content.res.ColorStateList(
-                            new int[][]{{android.R.attr.state_pressed}, {}},
-                            new int[]{0xFF1E3354, textColor}));
+                            new int[][]{{android.R.attr.state_pressed},
+                                    {android.R.attr.state_activated}, {}},
+                            new int[]{0xFF1E3354, 0xFF1E3354, textColor}));
                     icon.setOnLongClickListener(mOnIconLongClickListener);
                     row.addView(icon, lp);
                 } else {

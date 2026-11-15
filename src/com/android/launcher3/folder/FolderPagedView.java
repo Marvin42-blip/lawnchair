@@ -143,6 +143,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
      */
     private void setupContentDimensions(int count) {
         mAllocatedContentSize = count;
+        mOrganizer.setFixedFullGrid(mFolder != null && mFolder.isInAppDrawer());
         mOrganizer.setContentSize(count);
         mGridCountX = mOrganizer.getCountX();
         mGridCountY = mOrganizer.getCountY();
@@ -402,7 +403,15 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             int minCellHeight = allApps.getIconSizePx() + allApps.getIconDrawablePaddingPx()
                     + Utilities.calculateTextHeight(allApps.getIconTextSizePx()) + pad * 2;
             int minCellWidth = allApps.getIconSizePx() + pad * 2;
-            page.setCellDimensions(Math.max(allApps.getCellWidthPx(), minCellWidth),
+            // Perso : le dossier ouvert occupe toute la largeur de l'écran (petite marge).
+            int margin = Math.round(12 * getResources().getDisplayMetrics().density);
+            int cols = Math.max(1, mGridCountX);
+            int available = grid.getDeviceProperties().getWidthPx() - 2 * margin
+                    - mFolder.getPaddingLeft() - mFolder.getPaddingRight()
+                    - getPaddingLeft() - getPaddingRight()
+                    - (cols - 1) * grid.folderCellLayoutBorderSpacePx.x;
+            int fullWidthCell = available / cols;
+            page.setCellDimensions(Math.max(fullWidthCell, minCellWidth),
                     Math.max(allApps.getCellHeightPx(), minCellHeight));
         } else {
             page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
@@ -525,8 +534,11 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             return 0;
         }
         int maxPageHeight = 0;
+        boolean fullGrid = mFolder != null && mFolder.isInAppDrawer();
         for (int i = 0; i < getPageCount(); i++) {
-            maxPageHeight = Math.max(maxPageHeight, getPageAt(i).getDesiredHeightForOccupiedRows());
+            maxPageHeight = Math.max(maxPageHeight, fullGrid
+                    ? getPageAt(i).getDesiredHeight()
+                    : getPageAt(i).getDesiredHeightForOccupiedRows());
         }
         return maxPageHeight + getPaddingTop() + getPaddingBottom();
     }

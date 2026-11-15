@@ -13,6 +13,14 @@ import com.android.launcher3.folder.FolderIcon
 class FolderRowIcon(context: Context, attrs: AttributeSet?) : FolderIcon(context, attrs) {
     override fun setIconVisible(visible: Boolean) {
         super.setIconVisible(false)
+        // Le dossier s'ouvre quand l'aperçu est masqué, se ferme quand il réapparaît :
+        // le rectangle reste « activé » (ambre) pendant que son dossier est ouvert.
+        isActivated = !visible
+    }
+
+    /** Masque l'aperçu rond sans activer le rectangle (utilisé à l'affichage). */
+    fun hidePreview() {
+        super.setIconVisible(false)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
