@@ -1397,6 +1397,10 @@ public class DeviceProfile {
             );
         }
 
+        // Perso : une ligne du tiroir contient toujours l'icône entière et son nom,
+        // même si « Hauteur des lignes » est réglée très bas.
+        mAllAppsProfile = ensureAllAppsCellFitsContent(getAllAppsProfile());
+
         updateHotseatSizes(iconSizePx);
 
         // Folder icon
@@ -2477,6 +2481,17 @@ public class DeviceProfile {
 
     public AllAppsProfile getAllAppsProfile() {
         return mAllAppsProfile;
+    }
+
+    /** Perso : hauteur minimale d'une ligne du tiroir = icône + espacement + nom + petite marge. */
+    private AllAppsProfile ensureAllAppsCellFitsContent(AllAppsProfile profile) {
+        if (profile.getIconSizePx() <= 0) return profile;
+        int textHeight = profile.getIconTextSizePx() > 0
+                ? Utilities.calculateTextHeight(profile.getIconTextSizePx()) : 0;
+        int minHeight = profile.getIconSizePx() + profile.getIconDrawablePaddingPx() + textHeight
+                + pxFromDp(6, mMetrics);
+        if (profile.getCellHeightPx() >= minHeight) return profile;
+        return profile.copyWithCellHeightPx(minHeight);
     }
 
     public void setAllAppsProfile(AllAppsProfile allAppsProfile) {
