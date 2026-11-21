@@ -120,7 +120,15 @@ class PersoMoveShortcut(
         }
 
         if (choices.isEmpty()) return
-        AlertDialog.Builder(launcher)
+        // Thème clair/sombre du système explicite : le thème du lanceur rendait le texte illisible
+        val night = (launcher.resources.configuration.uiMode and
+            android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val dialogTheme = if (night) {
+            android.R.style.Theme_DeviceDefault_Dialog_Alert
+        } else {
+            android.R.style.Theme_DeviceDefault_Light_Dialog_Alert
+        }
+        AlertDialog.Builder(launcher, dialogTheme)
             .setTitle(launcher.getString(R.string.perso_move_title, appName))
             .setItems(choices.map { it.label }.toTypedArray()) { _, which -> choices[which].action() }
             .setNegativeButton(android.R.string.cancel, null)

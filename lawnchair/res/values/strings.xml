@@ -1124,7 +1124,7 @@
     <string name="perso_folder_icon_gallery">Choisir une image</string>
     <string name="perso_move_to">Déplacer vers…</string>
     <string name="perso_move_title">Déplacer « %1$s » vers</string>
-    <string name="perso_drawer_prefix">Tiroir : </string>
+    <string name="perso_drawer_prefix">"Tiroir : "</string>
     <string name="perso_drawer_no_folder">Tiroir, hors dossier</string>
     <string name="perso_copy_to_home">Bureau (copie)</string>
     <string name="perso_remove_from_home_folder">Retirer de ce dossier du bureau</string>
