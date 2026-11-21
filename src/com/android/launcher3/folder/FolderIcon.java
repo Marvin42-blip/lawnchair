@@ -601,6 +601,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         if (!mBackgroundIsVisible) return;
 
+        // Perso : les paramètres de l'aperçu servent aussi à l'animation d'ouverture,
+        // il faut donc les calculer même quand une icône personnalisée les cache.
+        mPreviewItemManager.recomputePreviewDrawingParams();
+
         // Perso : icône personnalisée à la place de l'aperçu du dossier
         if (mPersoCustomIcon != null) {
             int iconSize = mActivity.getDeviceProfile().iconSizePx;
@@ -611,8 +615,6 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             drawDot(canvas);
             return;
         }
-
-        mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackground(canvas);
