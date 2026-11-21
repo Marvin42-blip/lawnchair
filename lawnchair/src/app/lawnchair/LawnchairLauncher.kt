@@ -298,7 +298,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.getSupportedShortcuts(container),
         Stream.concat(
             Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE, LawnchairShortcut.OPEN_IN_STORE),
-            Stream.of(LawnchairShortcut.PAUSE_APPS),
+            Stream.of(LawnchairShortcut.PAUSE_APPS, app.lawnchair.ui.popup.PersoMoveShortcut.FACTORY),
         ),
     )
 
