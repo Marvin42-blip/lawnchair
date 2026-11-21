@@ -13,7 +13,6 @@ import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.R
 import com.android.launcher3.model.ItemInstallQueue
-import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ComponentKey
@@ -66,7 +65,7 @@ class PersoMoveShortcut(
         val keyString = key.toString()
         fun FolderEntry.contains() = itemComponentKeys.any { ComponentKey.fromString(it) == key }
 
-        val fromDrawer = info is AppInfo
+        val fromDrawer = info is com.android.launcher3.model.data.AppInfo
         val appName = info.title?.toString().orEmpty()
         val choices = mutableListOf<Choice>()
 
