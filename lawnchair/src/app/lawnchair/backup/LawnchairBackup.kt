@@ -160,6 +160,9 @@ class LawnchairBackup(
                 .setPreviewDarkText(wallpaperSupportsDarkText)
                 .build()
 
+            // Perso : écrit dans la base les dernières modifications (dossiers du tiroir, icônes)
+            // avant de la copier, sinon la sauvegarde peut contenir un état ancien.
+            runCatching { app.lawnchair.data.AppDatabase.INSTANCE.get(context).checkpoint() }
             val pfd = context.contentResolver.openFileDescriptor(fileUri, "w")!!
             withContext(Dispatchers.IO) {
                 pfd.use {
