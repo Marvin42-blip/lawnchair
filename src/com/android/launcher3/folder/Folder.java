@@ -1548,6 +1548,24 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
     }
 
+    /** Perso : range les applis du dossier par ordre alphabétique et l'enregistre. */
+    public void persoSortAlphabetically() {
+        java.text.Collator collator = java.text.Collator.getInstance();
+        collator.setStrength(java.text.Collator.PRIMARY);
+        java.util.Comparator<ItemInfo> byTitle = (a, b) -> collator.compare(
+                a.title == null ? "" : a.title.toString(),
+                b.title == null ? "" : b.title.toString());
+        mInfo.getContents().sort(byTitle);
+        if (mContent.areViewsBound()) {
+            ArrayList<View> views = new ArrayList<>(getIconsInReadingOrder());
+            views.sort((a, b) -> byTitle.compare((ItemInfo) a.getTag(), (ItemInfo) b.getTag()));
+            mContent.arrangeChildren(views);
+            mItemsInvalidated = true;
+        }
+        updateItemLocationsInDatabaseBatch(false);
+        if (mFolderIcon != null) mFolderIcon.onItemsChanged(false);
+    }
+
     /**
      * Rearranges the children based on their rank.
      */

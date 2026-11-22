@@ -170,6 +170,15 @@ object PersoFolderIcons {
                 true
             },
         )
+        items += OptionsPopupView.OptionItem(
+            launcher,
+            R.string.perso_folder_sort_az,
+            R.drawable.ic_perso_sort_az,
+            StatsLogManager.LauncherEvent.IGNORE,
+        ) {
+            icon.folder.persoSortAlphabetically()
+            true
+        }
         if (has(launcher, folderId)) {
             items += OptionsPopupView.OptionItem(
                 launcher,

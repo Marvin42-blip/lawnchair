@@ -1131,4 +1131,5 @@
     <string name="perso_moved_to_folder">« %1$s » rangée dans « %2$s »</string>
     <string name="perso_moved_out_of_folder">« %1$s » sortie de son dossier du tiroir</string>
     <string name="perso_copied_to_home">« %1$s » ajoutée au bureau</string>
+    <string name="perso_folder_sort_az">Trier de A à Z</string>
 </resources>
