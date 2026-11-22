@@ -156,11 +156,23 @@ class PersoMoveShortcut(
                 return tv
             }
         }
-        AlertDialog.Builder(themed, dialogTheme)
+        // Perso : liste gérée ici. La liste intégrée d'Android 16 compte un en-tête invisible
+        // dans la position touchée, ce qui choisissait la ligne suivante.
+        val listView = android.widget.ListView(themed).apply {
+            this.adapter = adapter
+            divider = null
+        }
+        val dialog = AlertDialog.Builder(themed, dialogTheme)
             .setTitle(launcher.getString(R.string.perso_move_title, appName))
-            .setAdapter(adapter) { _, which -> choices[which].action() }
+            .setView(listView)
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .create()
+        listView.setOnItemClickListener { _, row, _, _ ->
+            val index = choices.indexOfFirst { it.label == (row as android.widget.TextView).text.toString() }
+            dialog.dismiss()
+            if (index >= 0) choices[index].action()
+        }
+        dialog.show()
     }
 
     companion object {
