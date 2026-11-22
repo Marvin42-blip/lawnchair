@@ -1102,7 +1102,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         cancelRunningAnimations();
         // Perso : les dossiers du tiroir (rectangles sans aperçu) se ferment par un
         // simple fondu, au lieu de se replier vers un aperçu invisible.
-        final boolean drawerFolder = LawnchairUtilsKt.isDrawerFolder(mInfo);
+        // Perso : même fondu pour un dossier du bureau à icône personnalisée : se replier
+        // vers l'aperçu (mini-icônes) puis basculer sur l'image donnait une fin saccadée.
+        final boolean drawerFolder = LawnchairUtilsKt.isDrawerFolder(mInfo)
+                || (mFolderIcon != null && mFolderIcon.hasPersoCustomIcon());
         AnimatorSet animatorSet;
         if (drawerFolder) {
             animatorSet = new AnimatorSet();
