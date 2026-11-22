@@ -508,6 +508,13 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // Perso : voile sombre sur le fond d'écran de l'accueil en thème sombre (0 = désactivé)
+    val darkWallpaperDim = preference(
+        key = floatPreferencesKey(name = "perso_dark_wallpaper_dim"),
+        defaultValue = 0.4f,
+        onSet = { reloadHelper.recreate() },
+    )
+
     // Perso : couleur des widgets (« Par défaut » = couleur d'accent du lanceur)
     val widgetColor = preference(
         key = stringPreferencesKey(name = "perso_widget_color"),

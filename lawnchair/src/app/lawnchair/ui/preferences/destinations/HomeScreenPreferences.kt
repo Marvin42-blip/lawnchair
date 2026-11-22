@@ -180,6 +180,14 @@ fun HomeScreenPreferences(
                 adapter = prefs2.showTopShadow.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
             )
+            // Perso : assombrir le fond d'écran en thème sombre
+            SliderPreference(
+                label = stringResource(id = R.string.perso_dark_wallpaper_dim),
+                adapter = prefs2.darkWallpaperDim.getAdapter(),
+                step = 0.05f,
+                valueRange = 0F..0.8F,
+                showAsPercentage = true,
+            )
         }
         val columns by prefs.workspaceColumns.getAdapter()
         val rows by prefs.workspaceRows.getAdapter()

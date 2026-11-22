@@ -1138,4 +1138,5 @@
     <string name="perso_home_full">Plus de place sur l\'écran d\'accueil</string>
     <string name="perso_widget_color">Couleur des widgets</string>
     <string name="perso_widget_color_desc">La couleur s\'applique aux widgets qui suivent les couleurs du système (Google, horloge, météo, agenda…). Les autres gardent leurs propres couleurs.</string>
+    <string name="perso_dark_wallpaper_dim">Assombrir le fond d\'écran en thème sombre</string>
 </resources>

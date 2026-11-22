@@ -171,11 +171,27 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
+    /**
+     * Perso : en thème sombre, voile noir posé sur le fond d'écran, derrière le bureau et le
+     * dock. Ne touche pas l'écran de verrouillage (réglage réservé au système).
+     */
+    private fun applyPersoWallpaperDim() {
+        val night = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val amount = preferenceManager2.darkWallpaperDim.firstCached().coerceIn(0f, 0.9f)
+        dragLayer.background = if (night && amount > 0f) {
+            android.graphics.drawable.ColorDrawable(android.graphics.Color.argb((amount * 255).toInt(), 0, 0, 0))
+        } else {
+            null
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         persoNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
 
+        applyPersoWallpaperDim()
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
         preferenceManager2.enableFeed.get().distinctUntilChanged().onEach { enable ->
