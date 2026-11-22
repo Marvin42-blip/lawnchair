@@ -128,9 +128,37 @@ class PersoMoveShortcut(
         } else {
             android.R.style.Theme_DeviceDefault_Light_Dialog_Alert
         }
-        AlertDialog.Builder(launcher, dialogTheme)
+        // Perso : lignes construites ici (hauteur, marges et couleur fixes). La mise en page
+        // par défaut, héritée du thème du lanceur, décalait le texte : un appui sur une ligne
+        // choisissait la suivante.
+        val themed = android.view.ContextThemeWrapper(launcher, dialogTheme)
+        val ta = themed.obtainStyledAttributes(intArrayOf(android.R.attr.textColorPrimary))
+        val textColor = ta.getColor(0, android.graphics.Color.GRAY)
+        ta.recycle()
+        val density = launcher.resources.displayMetrics.density
+        val adapter = object : android.widget.BaseAdapter() {
+            override fun getCount() = choices.size
+            override fun getItem(position: Int) = choices[position]
+            override fun getItemId(position: Int) = position.toLong()
+            override fun getView(position: Int, convertView: View?, parent: android.view.ViewGroup?): View {
+                val tv = (convertView as? android.widget.TextView) ?: android.widget.TextView(themed).apply {
+                    minHeight = (52 * density).toInt()
+                    gravity = android.view.Gravity.CENTER_VERTICAL
+                    setPadding((24 * density).toInt(), 0, (24 * density).toInt(), 0)
+                    textSize = 17f
+                    setTextColor(textColor)
+                    layoutParams = android.widget.AbsListView.LayoutParams(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                    )
+                }
+                tv.text = choices[position].label
+                return tv
+            }
+        }
+        AlertDialog.Builder(themed, dialogTheme)
             .setTitle(launcher.getString(R.string.perso_move_title, appName))
-            .setItems(choices.map { it.label }.toTypedArray()) { _, which -> choices[which].action() }
+            .setAdapter(adapter) { _, which -> choices[which].action() }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
