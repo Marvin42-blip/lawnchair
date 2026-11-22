@@ -321,8 +321,11 @@ public class LoaderTask implements Runnable {
         verifyNotStopped();
         IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
         setIgnorePackages(updateHandler);
+        // Perso : même fabrication d'icônes que le reste de Lawnchair (recadrage des icônes
+        // carrées des applis web). Avec la version d'origine, la mise à jour du cache au
+        // démarrage réenregistrait ces icônes carrées.
         updateHandler.updateIcons(allActivityList,
-                LauncherActivityCachingLogic.INSTANCE,
+                app.lawnchair.LawnchairActivityCachingLogic.INSTANCE.get(mContext),
                 mModel::onPackageIconsUpdated);
         logASplit("update AllApps icon cache finished");
 
