@@ -1,6 +1,5 @@
 package app.lawnchair.ui.popup
 
-import android.app.AlertDialog
 import android.os.Process
 import android.view.View
 import android.widget.Toast
@@ -120,59 +119,125 @@ class PersoMoveShortcut(
         }
 
         if (choices.isEmpty()) return
-        // Thème clair/sombre du système explicite : le thème du lanceur rendait le texte illisible
-        val night = (launcher.resources.configuration.uiMode and
+        showOverlay(launcher, launcher.getString(R.string.perso_move_title, appName), choices)
+    }
+
+    /**
+     * Perso : liste affichée dans le lanceur lui-même (pas dans une fenêtre de dialogue).
+     * Les fenêtres de dialogue ouvertes depuis le lanceur recevaient les appuis décalés
+     * d'une ligne : toucher « Connaissance » choisissait le dossier suivant.
+     */
+    private fun showOverlay(launcher: LawnchairLauncher, title: String, choices: List<Choice>) {
+        val ctx = launcher
+        val dp = ctx.resources.displayMetrics.density
+        fun px(v: Int) = (v * dp).toInt()
+        val night = (ctx.resources.configuration.uiMode and
             android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-        val dialogTheme = if (night) {
-            android.R.style.Theme_DeviceDefault_Dialog_Alert
-        } else {
-            android.R.style.Theme_DeviceDefault_Light_Dialog_Alert
+        val bg = ctx.getColor(if (night) android.R.color.system_neutral1_900 else android.R.color.system_neutral1_50)
+        val fg = ctx.getColor(if (night) android.R.color.system_neutral1_50 else android.R.color.system_neutral1_900)
+        val pressed = ctx.getColor(if (night) android.R.color.system_accent2_700 else android.R.color.system_accent2_100)
+        val accent = ctx.getColor(if (night) android.R.color.system_accent1_200 else android.R.color.system_accent1_600)
+
+        val dragLayer = launcher.dragLayer
+        val scrim = android.widget.FrameLayout(ctx).apply {
+            setBackgroundColor(0x99000000.toInt())
+            isClickable = true
+            isFocusable = true
+            isFocusableInTouchMode = true
         }
-        // Perso : lignes construites ici (hauteur, marges et couleur fixes). La mise en page
-        // par défaut, héritée du thème du lanceur, décalait le texte : un appui sur une ligne
-        // choisissait la suivante.
-        val themed = android.view.ContextThemeWrapper(launcher, dialogTheme)
-        val ta = themed.obtainStyledAttributes(intArrayOf(android.R.attr.textColorPrimary))
-        val textColor = ta.getColor(0, android.graphics.Color.GRAY)
-        ta.recycle()
-        val density = launcher.resources.displayMetrics.density
-        val adapter = object : android.widget.BaseAdapter() {
-            override fun getCount() = choices.size
-            override fun getItem(position: Int) = choices[position]
-            override fun getItemId(position: Int) = position.toLong()
-            override fun getView(position: Int, convertView: View?, parent: android.view.ViewGroup?): View {
-                val tv = (convertView as? android.widget.TextView) ?: android.widget.TextView(themed).apply {
-                    minHeight = (52 * density).toInt()
-                    gravity = android.view.Gravity.CENTER_VERTICAL
-                    setPadding((24 * density).toInt(), 0, (24 * density).toInt(), 0)
-                    textSize = 17f
-                    setTextColor(textColor)
-                    layoutParams = android.widget.AbsListView.LayoutParams(
-                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-                    )
-                }
-                tv.text = choices[position].label
-                return tv
+        fun close() = dragLayer.removeView(scrim)
+        scrim.setOnClickListener { close() }
+        scrim.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
+                close()
+                true
+            } else {
+                keyCode == android.view.KeyEvent.KEYCODE_BACK
             }
         }
-        // Perso : liste gérée ici. La liste intégrée d'Android 16 compte un en-tête invisible
-        // dans la position touchée, ce qui choisissait la ligne suivante.
-        val listView = android.widget.ListView(themed).apply {
-            this.adapter = adapter
-            divider = null
+
+        val card = android.widget.LinearLayout(ctx).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            background = android.graphics.drawable.GradientDrawable().apply {
+                setColor(bg)
+                cornerRadius = px(28).toFloat()
+            }
+            isClickable = true // ne ferme pas en touchant la carte
+            setPadding(0, px(20), 0, px(8))
         }
-        val dialog = AlertDialog.Builder(themed, dialogTheme)
-            .setTitle(launcher.getString(R.string.perso_move_title, appName))
-            .setView(listView)
-            .setNegativeButton(android.R.string.cancel, null)
-            .create()
-        listView.setOnItemClickListener { _, row, _, _ ->
-            val index = choices.indexOfFirst { it.label == (row as android.widget.TextView).text.toString() }
-            dialog.dismiss()
-            if (index >= 0) choices[index].action()
+        card.addView(
+            android.widget.TextView(ctx).apply {
+                text = title
+                textSize = 20f
+                setTextColor(fg)
+                setPadding(px(24), 0, px(24), px(12))
+            },
+        )
+        val rows = android.widget.LinearLayout(ctx).apply { orientation = android.widget.LinearLayout.VERTICAL }
+        choices.forEach { choice ->
+            rows.addView(
+                android.widget.TextView(ctx).apply {
+                    text = choice.label
+                    textSize = 17f
+                    setTextColor(fg)
+                    gravity = android.view.Gravity.CENTER_VERTICAL
+                    minHeight = px(52)
+                    setPadding(px(24), 0, px(24), 0)
+                    background = android.graphics.drawable.StateListDrawable().apply {
+                        addState(intArrayOf(android.R.attr.state_pressed), android.graphics.drawable.ColorDrawable(pressed))
+                        addState(intArrayOf(), android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+                    }
+                    setOnClickListener {
+                        close()
+                        choice.action()
+                    }
+                },
+                android.widget.LinearLayout.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                ),
+            )
         }
-        dialog.show()
+        val maxListHeight = (ctx.resources.displayMetrics.heightPixels * 0.6f).toInt()
+        val listHeight = minOf(maxListHeight, choices.size * px(52))
+        card.addView(
+            android.widget.ScrollView(ctx).apply { addView(rows) },
+            android.widget.LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, listHeight),
+        )
+        card.addView(
+            android.widget.TextView(ctx).apply {
+                text = ctx.getString(android.R.string.cancel)
+                textSize = 15f
+                setTextColor(accent)
+                gravity = android.view.Gravity.CENTER
+                minHeight = px(48)
+                setPadding(px(24), 0, px(24), 0)
+                setOnClickListener { close() }
+            },
+            android.widget.LinearLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            ).apply {
+                gravity = android.view.Gravity.END
+                marginEnd = px(12)
+            },
+        )
+        scrim.addView(
+            card,
+            android.widget.FrameLayout.LayoutParams(
+                minOf(px(420), ctx.resources.displayMetrics.widthPixels - px(48)),
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.Gravity.CENTER,
+            ),
+        )
+        dragLayer.addView(
+            scrim,
+            android.widget.FrameLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            ),
+        )
+        scrim.requestFocus()
     }
 
     companion object {
