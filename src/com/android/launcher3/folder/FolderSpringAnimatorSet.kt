@@ -95,6 +95,24 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             return FolderSpringAnimatorSet(animatorSet)
         }
 
+        /**
+         * Perso : animations du reste de l'écran (bureau et dock qui reprennent leur taille,
+         * voile sombre et zoom du fond d'écran) pour un dossier fermé en simple fondu.
+         * Sans elles, le bureau revenait d'un coup à la fin du fondu.
+         */
+        @JvmStatic
+        fun addLauncherAnimators(
+            folder: Folder,
+            launcherDelegate: LauncherDelegate,
+            animatorSet: AnimatorSet,
+            isOpening: Boolean,
+        ) {
+            addWorkspaceAnimators(folder.context, animatorSet, isOpening, launcherDelegate)
+            launcherDelegate.launcher?.depthController?.folderZoom?.let {
+                addWallpaperZoomAnimator(folder.context, animatorSet, isOpening, it)
+            }
+        }
+
         private fun <T : Any> playSpringAnimation(
             context: Context,
             animatorSet: AnimatorSet,

@@ -891,10 +891,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         mContent.bindItems(items);
         mContent.setCanAnnouncePageDescriptionForFolder(true);
+        // Perso : taille et couleur du texte appliquées avant de calculer la place du dossier,
+        // sinon le dossier grandit après coup et se décale au début de l'animation.
+        mItemsInvalidated = true;
+        applyDrawerFolderTextColor();
         centerAboutIcon();
         mItemsInvalidated = true;
         updateTextViewFocus();
-        applyDrawerFolderTextColor();
 
         mIsOpen = true;
 
@@ -1109,12 +1112,20 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         AnimatorSet animatorSet;
         if (drawerFolder) {
             animatorSet = new AnimatorSet();
-            animatorSet.playTogether(
+            AnimatorSet fade = new AnimatorSet();
+            fade.playTogether(
                     android.animation.ObjectAnimator.ofFloat(this, View.ALPHA, getAlpha(), 0f),
                     android.animation.ObjectAnimator.ofFloat(this, View.SCALE_X, getScaleX(), 0.94f),
                     android.animation.ObjectAnimator.ofFloat(this, View.SCALE_Y, getScaleY(), 0.94f));
-            animatorSet.setDuration(150);
-            animatorSet.setInterpolator(new android.view.animation.DecelerateInterpolator());
+            fade.setDuration(150);
+            fade.setInterpolator(new android.view.animation.DecelerateInterpolator());
+            animatorSet.play(fade);
+            // Perso : le bureau, le dock et le voile reviennent en douceur en même temps
+            // (animation d'origine), au lieu de sauter à la fin du fondu.
+            if (Flags.enableLauncherIconShapes() && Flags.enableExpressiveFolderExpansion()) {
+                FolderSpringAnimatorSet.addLauncherAnimators(
+                        this, mLauncherDelegate, animatorSet, /* isOpening */ false);
+            }
         } else {
             animatorSet = getFolderAnimationManager()
                     .createAnimatorSet(/* isOpening */ false);
