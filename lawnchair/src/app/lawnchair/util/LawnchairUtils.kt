@@ -530,13 +530,16 @@ private fun systemColor(context: Context, light: Int, dark: Int): Int =
 fun autoDrawerSurface(context: Context): Int =
     systemColor(context, android.R.color.system_neutral1_50, android.R.color.system_neutral1_900)
 
-/** Fond des rectangles de dossiers. */
+/**
+ * Fond des rectangles de dossiers : les bleus des boutons actifs du volet des réglages
+ * rapides (couleur principale du thème, et non plus la couleur secondaire, plus grise).
+ */
 fun autoDrawerFolderRow(context: Context): Int =
-    systemColor(context, android.R.color.system_accent2_100, android.R.color.system_accent2_700)
+    systemColor(context, android.R.color.system_accent1_100, android.R.color.system_accent1_200)
 
-/** Texte des rectangles de dossiers. */
+/** Texte des rectangles de dossiers : bleu très foncé, comme sur les boutons actifs du volet. */
 fun autoDrawerFolderText(context: Context): Int =
-    systemColor(context, android.R.color.system_accent2_900, android.R.color.system_accent2_50)
+    systemColor(context, android.R.color.system_accent1_900, android.R.color.system_accent1_900)
 
 
 // ---------------- Perso : dossiers du tiroir ----------------
