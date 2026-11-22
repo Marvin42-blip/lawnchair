@@ -139,22 +139,15 @@ class PersoMoveShortcut(
         val accent = ctx.getColor(if (night) android.R.color.system_accent1_200 else android.R.color.system_accent1_600)
 
         val dragLayer = launcher.dragLayer
-        val scrim = android.widget.FrameLayout(ctx).apply {
+        // Vue flottante du lanceur : les gestes (défilement du tiroir, volet des notifications)
+        // ne lui volent plus les glissements, et le bouton retour la ferme.
+        val scrim = PersoChoiceOverlay(ctx).apply {
             setBackgroundColor(0x99000000.toInt())
+            gravity = android.view.Gravity.CENTER
             isClickable = true
-            isFocusable = true
-            isFocusableInTouchMode = true
         }
-        fun close() = dragLayer.removeView(scrim)
+        fun close() = scrim.close(false)
         scrim.setOnClickListener { close() }
-        scrim.setOnKeyListener { _, keyCode, event ->
-            if (keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
-                close()
-                true
-            } else {
-                keyCode == android.view.KeyEvent.KEYCODE_BACK
-            }
-        }
 
         val card = android.widget.LinearLayout(ctx).apply {
             orientation = android.widget.LinearLayout.VERTICAL
@@ -224,20 +217,12 @@ class PersoMoveShortcut(
         )
         scrim.addView(
             card,
-            android.widget.FrameLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams(
                 minOf(px(420), ctx.resources.displayMetrics.widthPixels - px(48)),
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-                android.view.Gravity.CENTER,
             ),
         )
-        dragLayer.addView(
-            scrim,
-            android.widget.FrameLayout.LayoutParams(
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-            ),
-        )
-        scrim.requestFocus()
+        scrim.open(dragLayer)
     }
 
     companion object {
@@ -253,4 +238,31 @@ class PersoMoveShortcut(
             }
         }
     }
+}
+
+/** Perso : fond assombri plein écran qui porte la liste « Déplacer vers… ». */
+class PersoChoiceOverlay(context: android.content.Context) : AbstractFloatingView(context, null) {
+    private var parentLayer: android.view.ViewGroup? = null
+
+    fun open(layer: android.view.ViewGroup) {
+        parentLayer = layer
+        mIsOpen = true
+        layer.addView(
+            this,
+            android.widget.FrameLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            ),
+        )
+    }
+
+    override fun handleClose(animate: Boolean) {
+        mIsOpen = false
+        parentLayer?.removeView(this)
+    }
+
+    // Même famille que les vues Compose : aucun geste du lanceur ne l'intercepte
+    override fun isOfType(type: Int) = type and TYPE_COMPOSE_VIEW != 0
+
+    override fun onControllerInterceptTouchEvent(ev: android.view.MotionEvent?) = false
 }
