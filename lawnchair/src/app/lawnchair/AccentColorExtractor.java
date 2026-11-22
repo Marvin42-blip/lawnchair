@@ -86,7 +86,8 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
 
     protected void notifyListener() {
         if (mListener != null) {
-            mListener.onColorsChanged(generateColorsOverride(mThemeProvider.getColorScheme()));
+            // Perso : couleur des widgets réglable séparément
+            mListener.onColorsChanged(generateColorsOverride(mThemeProvider.getWidgetColorScheme()));
         }
     }
 

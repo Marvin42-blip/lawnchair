@@ -508,6 +508,15 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // Perso : couleur des widgets (« Par défaut » = couleur d'accent du lanceur)
+    val widgetColor = preference(
+        key = stringPreferencesKey(name = "perso_widget_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
     // Perso : les dossiers prennent la même forme que les icônes
     val folderShapeFollowsIcon = preference(
         key = booleanPreferencesKey(name = "perso_folder_shape_follows_icon"),

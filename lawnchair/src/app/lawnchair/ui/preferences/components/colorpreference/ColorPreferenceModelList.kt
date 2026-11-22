@@ -75,6 +75,13 @@ class ColorPreferenceModelList @Inject constructor(
         )
         registerModel(
             ColorPreferenceModel(
+                prefObject = prefs.widgetColor,
+                labelRes = R.string.perso_widget_color,
+                dynamicEntries = dynamicColorsWithDefault,
+            ),
+        )
+        registerModel(
+            ColorPreferenceModel(
                 prefObject = prefs.drawerFolderBackgroundColor,
                 labelRes = R.string.perso_drawer_folder_bg_color,
                 dynamicEntries = dynamicColorsWithDefault,

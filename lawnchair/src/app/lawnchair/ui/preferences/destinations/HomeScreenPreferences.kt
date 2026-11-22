@@ -266,7 +266,12 @@ fun HomeScreenPreferences(
                 )
             }
         }
-        PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
+        PreferenceGroup(
+            heading = stringResource(id = R.string.widget_button_text),
+            description = stringResource(id = R.string.perso_widget_color_desc),
+        ) {
+            // Perso : couleur des widgets
+            app.lawnchair.ui.preferences.components.colorpreference.ColorPreference(preference = prefs2.widgetColor)
             SwitchPreference(
                 adapter = prefs2.roundedWidgets.getAdapter(),
                 label = stringResource(id = R.string.force_rounded_widgets),

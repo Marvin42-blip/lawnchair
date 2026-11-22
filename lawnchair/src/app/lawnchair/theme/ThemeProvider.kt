@@ -113,6 +113,20 @@ class ThemeProvider @Inject constructor(
         else -> getColorScheme(ColorOption.LawnchairBlue.color, colorStyle.style)
     }
 
+    /**
+     * Perso : palette transmise aux widgets. Les widgets Material You (Google, horloge,
+     * météo…) se colorent avec elle ; « Par défaut » garde la couleur d'accent du lanceur.
+     */
+    val widgetColorScheme: ColorScheme get() = when (val option = preferenceManager2.widgetColor.firstCached()) {
+        is ColorOption.SystemAccent -> systemColorScheme
+        is ColorOption.WallpaperPrimary -> {
+            val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
+            getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color, colorStyle.style)
+        }
+        is ColorOption.CustomColor -> getColorScheme(option.color, colorStyle.style)
+        else -> colorScheme
+    }
+
     private val systemColorScheme get() = when {
         Utilities.ATLEAST_S -> getColorScheme(0, colorStyle.style)
         else -> getColorScheme(context.getSystemAccent(darkTheme = false), colorStyle.style)

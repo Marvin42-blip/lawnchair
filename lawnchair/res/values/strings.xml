@@ -1136,4 +1136,6 @@
     <string name="perso_folder_added_to_home">« %1$s » ajouté à l\'écran d\'accueil</string>
     <string name="perso_folder_already_on_home">« %1$s » est déjà sur l\'écran d\'accueil</string>
     <string name="perso_home_full">Plus de place sur l\'écran d\'accueil</string>
+    <string name="perso_widget_color">Couleur des widgets</string>
+    <string name="perso_widget_color_desc">La couleur s\'applique aux widgets qui suivent les couleurs du système (Google, horloge, météo, agenda…). Les autres gardent leurs propres couleurs.</string>
 </resources>
