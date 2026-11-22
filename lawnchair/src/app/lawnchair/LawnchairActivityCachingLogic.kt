@@ -90,7 +90,12 @@ class LawnchairActivityCachingLogic @Inject constructor(
                 // Make sure this default icon always matches BaseIconCache#getDefaultIcon
                 return cache.getDefaultIcon(info.user)
             }
-            return li.createBadgedIconBitmap(squareIconToAdaptive(iconDrawable), iconOptions)
+            // Perso : recadrage des icônes carrées (applis web) seulement avec les icônes du
+            // système ; les icônes d'un pack gardent la forme voulue par leur auteur.
+            val usesIconPack = app.lawnchair.preferences.PreferenceManager.getInstance(context)
+                .iconPackPackage.get().isNotEmpty()
+            val drawable = if (usesIconPack) iconDrawable else squareIconToAdaptive(iconDrawable)
+            return li.createBadgedIconBitmap(drawable, iconOptions)
         }
     }
 

@@ -846,14 +846,25 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * contrastée avec le fond choisi : foncée sur fond clair, claire sur fond foncé.
      */
     private float mPersoNameBaseSize = -1f;
+    /** Perso : couleur du texte du dossier ouvert (0 = pas encore calculée). */
+    int mPersoTextColor = 0;
 
     private void applyDrawerFolderTextColor() {
         // Perso : s'applique aussi aux dossiers du bureau (titre lisible quel que soit le thème)
         if (mInfo == null) return;
         int bg = LawnchairUtilsKt.resolveFolderBackgroundColorFor(getContext(), mInfo);
-        boolean lightBg = androidx.core.graphics.ColorUtils.calculateLuminance(bg) > 0.5;
-        int text = getContext().getColor(lightBg
-                ? android.R.color.system_neutral1_900 : android.R.color.system_neutral1_50);
+        int alpha = LawnchairUtilsKt.getFolderBackgroundAlphaFor(getContext(), mInfo);
+        int text;
+        if (alpha < 128) {
+            // Fond presque transparent : c'est le fond d'écran qui se voit derrière,
+            // on garde la couleur prévue pour le texte sur le fond d'écran.
+            text = com.android.launcher3.util.Themes.getAttrColor(getContext(), R.attr.workspaceTextColor);
+        } else {
+            boolean lightBg = androidx.core.graphics.ColorUtils.calculateLuminance(bg) > 0.5;
+            text = getContext().getColor(lightBg
+                    ? android.R.color.system_neutral1_900 : android.R.color.system_neutral1_50);
+        }
+        mPersoTextColor = text;
         for (View v : getIconsInReadingOrder()) {
             if (v instanceof android.widget.TextView) {
                 ((android.widget.TextView) v).setTextColor(text);

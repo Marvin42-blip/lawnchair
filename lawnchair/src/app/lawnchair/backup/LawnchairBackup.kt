@@ -61,6 +61,9 @@ class LawnchairBackup(
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
+            // Perso : les icônes de dossiers ne sont pas sauvegardées et leurs numéros
+            // ne correspondent plus après restauration
+            app.lawnchair.folder.PersoFolderIcons.forgetAll(context)
             handlers.putAll(
                 getFiles(context, forRestore = true).mapValues { entry ->
                     {

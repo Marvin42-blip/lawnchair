@@ -422,8 +422,28 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         return (viewType & viewTypeMask) != 0;
     }
 
+    /** Perso : empreinte des dossiers affichés (identifiants, titres, applis). */
+    private static String folderGridSignature(java.util.List<FolderInfo> folders) {
+        if (folders == null) return "";
+        StringBuilder sb = new StringBuilder();
+        for (FolderInfo f : folders) {
+            sb.append(f.id).append(':').append(f.title).append('[');
+            for (com.android.launcher3.model.data.ItemInfo item : f.getContents()) {
+                sb.append(System.identityHashCode(item)).append(',');
+            }
+            sb.append(']');
+        }
+        return sb.toString();
+    }
+
     /** Perso: dessine les dossiers du tiroir en rectangles de texte, deux par ligne. */
     private void bindFolderGrid(LinearLayout grid, java.util.List<FolderInfo> folders) {
+        // Perso : ne reconstruit les rectangles que si les dossiers ont changé (titres,
+        // contenu ou applis mises à jour). Chaque rectangle porte une fenêtre de dossier,
+        // les recréer à chaque affichage ralentissait le tiroir.
+        String signature = folderGridSignature(folders);
+        if (grid.getChildCount() > 0 && signature.equals(grid.getTag())) return;
+        grid.setTag(signature);
         grid.removeAllViews();
         if (folders == null) return;
         float density = mActivityContext.getResources().getDisplayMetrics().density;

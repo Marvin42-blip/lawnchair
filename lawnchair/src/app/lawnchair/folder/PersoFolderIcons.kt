@@ -81,6 +81,20 @@ object PersoFolderIcons {
         false
     }
 
+    /** Dossier supprimé : efface son icône personnalisée. */
+    @JvmStatic
+    fun forget(context: Context, folderId: Int) {
+        if (has(context, folderId)) reset(context, folderId)
+    }
+
+    /** Restauration d'une sauvegarde : les numéros de dossiers ne correspondent plus. */
+    @JvmStatic
+    fun forgetAll(context: Context) {
+        prefs(context).edit().clear().commit()
+        File(context.applicationContext.filesDir, "perso_folder_icons").listFiles()?.forEach { it.delete() }
+        cache.clear()
+    }
+
     fun reset(context: Context, folderId: Int) {
         prefs(context).edit().remove(folderId.toString()).commit()
         imageFile(context, folderId).delete()

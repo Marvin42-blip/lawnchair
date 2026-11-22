@@ -364,6 +364,11 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             }
         }
 
+        // Perso : une appli ajoutée au dossier ouvert prend la même couleur de texte
+        if (mFolder.mPersoTextColor != 0 && icon instanceof android.widget.TextView tv) {
+            tv.setTextColor(mFolder.mPersoTextColor);
+        }
+
         icon.setOnClickListener(mFolder.mActivityContext.getItemOnClickListener());
         icon.setOnLongClickListener(mFolder);
         icon.setOnFocusChangeListener(mFocusIndicatorHelper);

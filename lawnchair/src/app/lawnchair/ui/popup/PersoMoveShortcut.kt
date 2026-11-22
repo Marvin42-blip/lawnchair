@@ -7,7 +7,6 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.service.FolderService
-import app.lawnchair.preferences2.ReloadHelper
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.R
@@ -80,7 +79,6 @@ class PersoMoveShortcut(
                 if (target != null && !target.contains()) {
                     service.updateFolderWithItems(target.id, target.title, target.itemComponentKeys + keyString)
                 }
-                ReloadHelper(launcher).reloadGrid()
                 val msg = if (target != null) {
                     launcher.getString(R.string.perso_moved_to_folder, appName, target.title)
                 } else {
@@ -104,12 +102,27 @@ class PersoMoveShortcut(
         if (fromDrawer) {
             // Copie sur le bureau (l'appli reste aussi dans le tiroir)
             choices += Choice(launcher.getString(R.string.perso_copy_to_home)) {
-                ItemInstallQueue.INSTANCE.get(launcher).queueItem(component.packageName, info.user)
-                Toast.makeText(
-                    launcher,
-                    launcher.getString(R.string.perso_copied_to_home, appName),
-                    Toast.LENGTH_SHORT,
-                ).show()
+                // Déjà sur l'écran d'accueil ou le dock (hors dossiers) ? Android ne l'ajouterait pas.
+                var alreadyOnHome = false
+                launcher.workspace.mapOverItems(
+                    com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator { item, _ ->
+                        if (item != null &&
+                            item.itemType == ITEM_TYPE_APPLICATION &&
+                            item.targetComponent?.packageName == component.packageName &&
+                            item.user == info.user &&
+                            (item.container == com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                                item.container == com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                        ) {
+                            alreadyOnHome = true
+                        }
+                        alreadyOnHome
+                    },
+                )
+                if (!alreadyOnHome) {
+                    ItemInstallQueue.INSTANCE.get(launcher).queueItem(component.packageName, info.user)
+                }
+                val msg = if (alreadyOnHome) R.string.perso_already_on_home else R.string.perso_copied_to_home
+                Toast.makeText(launcher, launcher.getString(msg, appName), Toast.LENGTH_SHORT).show()
             }
         } else if (info.container > 0) {
             // Retirer d'un dossier du bureau (l'appli reste dans le tiroir)

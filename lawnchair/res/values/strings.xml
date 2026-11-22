@@ -1132,4 +1132,8 @@
     <string name="perso_moved_out_of_folder">« %1$s » sortie de son dossier du tiroir</string>
     <string name="perso_copied_to_home">« %1$s » ajoutée au bureau</string>
     <string name="perso_folder_sort_az">Trier de A à Z</string>
+    <string name="perso_already_on_home">« %1$s » est déjà sur le bureau</string>
+    <string name="perso_folder_added_to_home">« %1$s » ajouté à l\'écran d\'accueil</string>
+    <string name="perso_folder_already_on_home">« %1$s » est déjà sur l\'écran d\'accueil</string>
+    <string name="perso_home_full">Plus de place sur l\'écran d\'accueil</string>
 </resources>

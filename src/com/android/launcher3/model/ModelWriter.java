@@ -429,6 +429,11 @@ public class ModelWriter {
         notifyDelete(items);
         enqueueDeleteRunnable(newModelTask(() -> {
             for (ItemInfo item : items) {
+                // Perso : un dossier supprimé (définitivement, après l'annulation possible)
+                // perd son icône personnalisée, son numéro pouvant être réutilisé.
+                if (item instanceof com.android.launcher3.model.data.FolderInfo) {
+                    app.lawnchair.folder.PersoFolderIcons.forget(mContext, item.id);
+                }
                 mModel.getModelDbController().delete(itemIdMatch(item.id), null);
             }
             mBgDataModel.removeItem(mContext, items, mOwner);
@@ -449,6 +454,7 @@ public class ModelWriter {
 
             mModel.getModelDbController().delete(
                     Favorites._ID + "=" + info.id, null);
+            app.lawnchair.folder.PersoFolderIcons.forget(mContext, info.id);
 
             List<ItemInfo> itemsToDelete = new ArrayList<>(info.getContents());
             itemsToDelete.add(info);
